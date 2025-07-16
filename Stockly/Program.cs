@@ -8,6 +8,9 @@ var connectionString = builder.Configuration.GetConnectionString("defaultString"
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 
 builder.Services.AddDbContext<AppDbContext>(option => {
     option.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
@@ -19,6 +22,8 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.MapControllers();
