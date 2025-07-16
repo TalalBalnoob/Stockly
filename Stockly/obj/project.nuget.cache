@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "xXSFlG7fIpE=",
+  "dgSpecHash": "U6VLidrcJro=",
   "success": true,
-  "projectFilePath": "/home/talalbanoob/RiderProjects/Stockly/Stockly/Stockly.csproj",
+  "projectFilePath": "/home/talalbanoob/Coding/Stockly/Stockly/Stockly.csproj",
   "expectedPackageFiles": [
     "/home/talalbanoob/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/home/talalbanoob/.nuget/packages/microsoft.aspnetcore.openapi/9.0.6/microsoft.aspnetcore.openapi.9.0.6.nupkg.sha512",

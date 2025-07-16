@@ -3267,11 +3267,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/talalbanoob/RiderProjects/Stockly/Stockly/Stockly.csproj",
+      "projectUniqueName": "/home/talalbanoob/Coding/Stockly/Stockly/Stockly.csproj",
       "projectName": "Stockly",
-      "projectPath": "/home/talalbanoob/RiderProjects/Stockly/Stockly/Stockly.csproj",
+      "projectPath": "/home/talalbanoob/Coding/Stockly/Stockly/Stockly.csproj",
       "packagesPath": "/home/talalbanoob/.nuget/packages/",
-      "outputPath": "/home/talalbanoob/RiderProjects/Stockly/Stockly/obj/",
+      "outputPath": "/home/talalbanoob/Coding/Stockly/Stockly/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/talalbanoob/.nuget/NuGet/NuGet.Config"
