@@ -35,18 +35,7 @@ public class ProductController : Controller{
 
     [HttpPut("{id}")]
     public ActionResult<Product> Update(int id, Product product){
-        var productFormDb = _db.Products.FirstOrDefault(u => id == u.Id);
-        if (productFormDb == null) return NotFound();
-        
-        productFormDb.Name = product.Name?? productFormDb.Name;
-        productFormDb.Description = product.Description ?? productFormDb.Description;
-        productFormDb.Price = product.Price ?? productFormDb.Price;
-        productFormDb.Quantity = product.Quantity ?? productFormDb.Quantity;
-        // todo: work on the image process 
-        // productFormDb.ImageUrl = product.ImageUrl ?? productFormDb.ImageUrl;
-        
-        _db.SaveChanges();
-        return Ok(product);
+        return Ok(_db.Products.FirstOrDefault(u => id == u.Id));
     }
 
     [HttpDelete("{id}")]

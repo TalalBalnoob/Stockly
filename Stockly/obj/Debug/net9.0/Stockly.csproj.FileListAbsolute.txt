@@ -266,3 +266,4 @@
 /home/talalbanoob/Coding/Stockly/Stockly/obj/Debug/net9.0/Stockly.pdb
 /home/talalbanoob/Coding/Stockly/Stockly/obj/Debug/net9.0/Stockly.genruntimeconfig.cache
 /home/talalbanoob/Coding/Stockly/Stockly/obj/Debug/net9.0/ref/Stockly.dll
+/home/talalbanoob/Coding/Stockly/Stockly/obj/Debug/net9.0/Stockly.sourcelink.json

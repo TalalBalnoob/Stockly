@@ -5,20 +5,17 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 namespace Stockly.Models;
 
 [ValidateNever]
-public class Product
-{
+public class Order{
     [Key] public int Id { get; set; }
-    [Required]public string Name { get; set; }
-    public string? Description { get; set; }
-    [Required]public decimal Base_Price { get; set; }
-    public string? ImageUrl { get; set; }
-    public bool IsActive { get; set; }
+    [Required] public string Customer_Name { get; set; }
+    [Required] public string Customer_Contact { get; set; }
+    [Required] public string Status { get; set; }
+    [Required] public decimal Totel_amount { get; set; }
     
     [Column(TypeName = "timestamp")]
     public DateTime CreatedAt { get; set; }
-    
-    public Product()
-    {
-        CreatedAt = DateTime.UtcNow;
+
+    public Order(){
+        CreatedAt = DateTime.Now;
     }
 }
