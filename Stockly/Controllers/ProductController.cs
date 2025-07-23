@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Stockly.DTOs;
 using Stockly.Models;
 
 namespace Stockly.Controllers;
@@ -27,10 +28,8 @@ public class ProductController : Controller{
     }
 
     [HttpPost]
-    public ActionResult<Product> Create(Product product){
-        _db.Products.Add(product);
-        _db.SaveChanges();
-        return CreatedAtAction(nameof(Show), new { id = product.Id }, product);
+    public ActionResult<Product> Create(CreateProductDto product){
+        return Ok();
     }
 
     [HttpPut("{id}")]
