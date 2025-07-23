@@ -11,6 +11,9 @@ public class StockAdjustment{
     [Required] public int Change { get; set; }
     public string? Reason {get; set;}
     
+    [ForeignKey("Variant_Id")]
+    public Variant? Variant {get; set;}
+    
     [Column(TypeName = "timestamp")]
     public DateTime CreatedAt { get; set; }
 
