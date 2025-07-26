@@ -1,0 +1,40 @@
+# Build output
+bin/
+obj/
+out/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# VS Code
+.vscode/
+
+# Rider
+.idea/
+
+# ASP.NET artifacts
+wwwroot/dist/
+wwwroot/node_modules/
+
+# Logs
+*.log
+logs/
+
+# Dependency folders
+node_modules/
+packages/
+
+# Secrets
+appsettings.*.json
+secrets.json
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml
+.env
