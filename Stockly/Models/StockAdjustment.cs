@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Stockly.Models;
 
-// [ValidateNever]
+[ValidateNever]
 public class StockAdjustment{
     [Key] public string Id { get; set; }
     [Required] public int Product_Id { get; set; }

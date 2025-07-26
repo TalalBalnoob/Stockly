@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Stockly.DTOs;
 using Stockly.Models;
 
 namespace Stockly.Controllers;
@@ -28,13 +27,35 @@ public class ProductController : Controller{
     }
 
     [HttpPost]
-    public ActionResult<Product> Create(CreateProductDto product){
-        return Ok();
+    public ActionResult<Product> Create(Product product){
+        Product newProduct = new Product{
+            Name = product.Name,
+            Description = product.Description ?? "",
+            Price = product.Price,
+            Quantity = product.Quantity,
+            ImageUrl = null,
+            IsActive = product.IsActive != null ? product.IsActive : true,
+        };
+        
+        _db.Products.Add(newProduct);
+        _db.SaveChanges();
+        return CreatedAtAction(nameof(Show), new { id = newProduct.Id }, newProduct);
     }
 
     [HttpPut("{id}")]
     public ActionResult<Product> Update(int id, Product product){
-        return Ok(_db.Products.FirstOrDefault(u => id == u.Id));
+        Product productFromDb = _db.Products.FirstOrDefault(u => id == u.Id);
+        if (productFromDb == null) return NotFound();
+        
+        productFromDb.Name = product.Name ?? productFromDb.Name;
+        productFromDb.Description = product.Description ?? productFromDb.Description;
+        productFromDb.Price = product.Price ?? productFromDb.Price;
+        productFromDb.Quantity = product.Quantity ??  productFromDb.Quantity;
+        // productFromDb.ImageUrl = product.ImageUrl;
+        productFromDb.IsActive = product.IsActive ?? productFromDb.IsActive;
+        
+        _db.SaveChanges();
+        return Ok(productFromDb);
     }
 
     [HttpDelete("{id}")]
