@@ -6,7 +6,7 @@ namespace Stockly.Models;
 
 [ValidateNever]
 public class StockAdjustment{
-    [Key] public string Id { get; set; }
+    [Key] public int Id { get; set; }
     [Required] public int Product_Id { get; set; }
     [Required] public int Change { get; set; }
     public string? Reason {get; set;}
