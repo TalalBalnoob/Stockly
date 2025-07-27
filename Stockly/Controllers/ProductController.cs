@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Stockly.DTOs;
 using Stockly.Models;
 
 namespace Stockly.Controllers;
@@ -43,7 +44,7 @@ public class ProductController : Controller{
     }
 
     [HttpPut("{id}")]
-    public ActionResult<Product> Update(int id, Product product){
+    public ActionResult<Product> Update(int id, ProductDto product){
         Product productFromDb = _db.Products.FirstOrDefault(u => id == u.Id);
         if (productFromDb == null) return NotFound();
         
