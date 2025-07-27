@@ -12,6 +12,10 @@ public class Order{
     [Required] public string Status { get; set; }
     [Required] public decimal Totel_amount { get; set; }
     
+    public string PaymentMethod { get; set; } // e.g. "Cash", "Mada"
+    
+    public string? PaymentNotes { get; set; }
+    
     [Column(TypeName = "timestamp")]
     public DateTime CreatedAt { get; set; }
 
