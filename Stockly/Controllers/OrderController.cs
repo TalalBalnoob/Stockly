@@ -20,6 +20,7 @@ public class OrderController : Controller{
             Customer_Name = orderDto.customerName,
             Customer_Contact = orderDto.CustomerContact,
             Status = OrderStatuses.Approved,
+            Totel_amount = 0
             // PaymentMethod = orderDto.PaymentMethod ?? "",
             // PaymentNotes = orderDto.PaymentNotes ?? "",
         };
@@ -27,32 +28,31 @@ public class OrderController : Controller{
         List<OrderItem> orderItems = new List<OrderItem>();
 
         foreach (OrderItemDto item in orderDto.Items){
-            var product = _db.Products.Find(item.product_id);
+            var product = _db.Products.Find(item.productId);
             if (product == null) return NotFound("Product not found");
 
-            orderItems.Add(new OrderItem{
-                ProductId = item.product_id,
+            var newOrderItem = new OrderItem{
+                ProductId = item.productId,
                 Price = item.UnitPrice ?? product.Price,
                 Quantity = item.Quantity,
                 Order = order,
                 Subtotle = item.Quantity * (item.UnitPrice ?? product.Price),
-            });
+            };
+            orderItems.Add(newOrderItem);
 
-            order.Totel_amount = (item.UnitPrice ?? product.Price) * item.Quantity;
+            order.Totel_amount += newOrderItem.Subtotle;
 
             var ItemStock = new StockAdjustment{
                 Change = -item.Quantity,
                 Reason = "order",
-                Product_Id = item.product_id,
+                Product_Id = item.productId,
             };
             _db.StockAdjustment.Add(ItemStock);
-
 
             product.Quantity -= item.Quantity;
             _db.Products.Update(product);
         }
-
-
+        
         _db.OrderItems.AddRange(orderItems);
         _db.Orders.Add(order);
         _db.SaveChanges();
@@ -61,19 +61,74 @@ public class OrderController : Controller{
 
     [HttpPut("{id}")]
     public ActionResult Update(int id, OrderDto orderDto){
-        /*
-        step 1: change the main order information 
-        step 2: update the order items 
-            step 2.1: if there then change 
-            step 2.2: if new then add
-            step 2.3: if remove then just delete it 
-                how to know if update, add, delete 
-        step 3: update the stock
-            how to get the stock adjustment related to the order 
-            or should i make new stock adjustment where reason is "update order"
-            so for all this to be valuable i need to provide the id of order if exists or some kind of key  
-        step 4: update quantity of product 
-        */
+        var orderFromDb = _db.Orders.Find(id);
+        if (orderFromDb == null) return NotFound("Order not found");
+
+        var orderItemsList = _db.OrderItems.Where(x => x.OrderId == id).ToList();
+        foreach (var orderItem in orderItemsList){
+            var product = _db.Products.Find(orderItem.ProductId);
+            product.Quantity += orderItem.Quantity;
+        }
+
+        orderFromDb.Customer_Name = orderDto.customerName;
+        orderFromDb.Customer_Contact = orderDto.CustomerContact;
+        orderFromDb.Status = orderDto.Status ?? orderFromDb.Status;
+
+        List<OrderItem> orderItems = new List<OrderItem>();
+        foreach (var item in orderDto.Items){
+            var product = _db.Products.Find(item.productId);
+            orderItems.Add(new OrderItem{
+                ProductId = item.productId,
+                Price = item.UnitPrice ?? product.Price,
+                Quantity = item.Quantity,
+                Order = orderFromDb,
+                Subtotle = item.Quantity * (item.UnitPrice ?? product.Price),
+            });
+            product.Quantity -= item.Quantity;
+            if (product.Quantity < 0){
+                return BadRequest("Insufficient quantity");
+            }
+        }
+        
+        foreach (var item in orderItems){
+            var existing = orderItemsList.FirstOrDefault(x => x.ProductId == item.ProductId);
+            
+            if (existing == null){
+                var adjustment = new StockAdjustment{
+                    Product_Id = item.ProductId,
+                    Change = -item.Quantity,
+                    Reason = "Order Updated",
+                };
+                _db.StockAdjustment.Add(adjustment);
+            }
+            else if (existing.Quantity != item.Quantity){
+                int diff = item.Quantity - existing.Quantity;
+                var adjustment = new StockAdjustment{
+                    Product_Id = item.ProductId,
+                    Change = -diff,
+                    Reason = "Order Updated",
+                };
+                _db.StockAdjustment.Add(adjustment);
+            }
+        }
+
+        foreach (var oldItem in orderItemsList){
+            if (!orderItems.Any(x => x.ProductId == oldItem.ProductId)){
+                var adjustment = new StockAdjustment{
+                    Product_Id = oldItem.ProductId,
+                    Change = -oldItem.Quantity,
+                    Reason = "Order Updated",
+                };
+                _db.StockAdjustment.Add(adjustment);
+            }
+        }
+        
+        orderFromDb.Totel_amount = orderItems.Where(x => x.Quantity > 0).Sum(x => x.Subtotle);
+        _db.OrderItems.RemoveRange(orderItemsList);
+        _db.OrderItems.AddRange(orderItems);
+        _db.SaveChanges();
+        
+        return Ok();
     }
 
     [HttpDelete("{id}")]

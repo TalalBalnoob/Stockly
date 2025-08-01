@@ -7,8 +7,8 @@ namespace Stockly.Models;
 [ValidateNever]
 public class Order{
     [Key] public int Id { get; set; }
-    [Required] public string? Customer_Name { get; set; }
-    [Required] public string? Customer_Contact { get; set; }
+    public string? Customer_Name { get; set; }
+    public string? Customer_Contact { get; set; }
     [Required] public string Status { get; set; }
     [Required] public decimal Totel_amount { get; set; }
     
