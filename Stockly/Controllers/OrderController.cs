@@ -131,6 +131,50 @@ public class OrderController : Controller{
         return Ok();
     }
 
+    [HttpPut("ship/{id}")]
+    public ActionResult Ship(int id){
+        var orderFromDb = _db.Orders.Find(id);
+        if (orderFromDb == null) return NotFound("Order not found");
+        
+        orderFromDb.Status = OrderStatuses.Shipped;
+        _db.SaveChanges();
+        return Ok("order shipped");
+    }
+    
+    [HttpPut("deliver/{id}")]
+    public ActionResult Deliver(int id){
+        var orderFromDb = _db.Orders.Find(id);
+        if (orderFromDb == null) return NotFound("Order not found");
+        
+        orderFromDb.Status = OrderStatuses.Delivered;
+        _db.SaveChanges();
+        return Ok("order Delivered");
+    }
+
+    [HttpPut("return/{id}")]
+    public ActionResult Return(int id){
+        var orderFromDb = _db.Orders.Find(id);
+        if (orderFromDb == null) return NotFound("Order not found");
+        
+        orderFromDb.Status = OrderStatuses.Returned;
+        
+        var orderItems = _db.OrderItems.Where(x => x.OrderId == id).ToList();
+        foreach (var orderItem in orderItems){
+            var product = _db.Products.Find(orderItem.ProductId);
+            product.Quantity += orderItem.Quantity;
+
+            var stockAdjustment = new StockAdjustment{
+                Change = orderItem.Quantity,
+                Reason = "Returned order",
+                Product_Id = orderItem.ProductId,
+            };
+            _db.StockAdjustment.Add(stockAdjustment);
+        }
+        
+        _db.SaveChanges();
+        return Ok("order shipped");
+    }
+    
     [HttpDelete("{id}")]
     public ActionResult CancelOrder(int id){
         var order = _db.Orders.Find(id);
