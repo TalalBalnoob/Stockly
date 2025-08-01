@@ -46,6 +46,7 @@ public class OrderController : Controller{
                 Change = -item.Quantity,
                 Reason = "order",
                 Product_Id = item.productId,
+                Related_Order_Id = item.orderId
             };
             _db.StockAdjustment.Add(ItemStock);
 
@@ -98,6 +99,7 @@ public class OrderController : Controller{
                     Product_Id = item.ProductId,
                     Change = -item.Quantity,
                     Reason = "Order Updated",
+                    Related_Order_Id = item.OrderId
                 };
                 _db.StockAdjustment.Add(adjustment);
             }
@@ -107,6 +109,7 @@ public class OrderController : Controller{
                     Product_Id = item.ProductId,
                     Change = -diff,
                     Reason = "Order Updated",
+                    Related_Order_Id = item.OrderId
                 };
                 _db.StockAdjustment.Add(adjustment);
             }
@@ -118,6 +121,7 @@ public class OrderController : Controller{
                     Product_Id = oldItem.ProductId,
                     Change = -oldItem.Quantity,
                     Reason = "Order Updated",
+                    Related_Order_Id = oldItem.OrderId
                 };
                 _db.StockAdjustment.Add(adjustment);
             }
@@ -167,6 +171,7 @@ public class OrderController : Controller{
                 Change = orderItem.Quantity,
                 Reason = "Returned order",
                 Product_Id = orderItem.ProductId,
+                Related_Order_Id = orderItem.OrderId,
             };
             _db.StockAdjustment.Add(stockAdjustment);
         }
@@ -189,6 +194,7 @@ public class OrderController : Controller{
                 Change = item.Quantity,
                 Reason = "Cancelled order",
                 Product_Id = item.ProductId,
+                Related_Order_Id = item.OrderId,
             };
 
             product.Quantity += item.Quantity;
