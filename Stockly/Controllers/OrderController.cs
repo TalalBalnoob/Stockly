@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Stockly.DTOs;
 using Stockly.Models;
 using Stockly.Statics;
@@ -12,6 +13,23 @@ public class OrderController : Controller{
 
     public OrderController(AppDbContext db){
         _db = db;
+    }
+
+    [HttpGet]
+    public ActionResult<IEnumerable<OrderDto>> Get(){
+        var orders = _db.Orders.ToList();
+        return Ok(orders);
+    }
+
+    [HttpGet("{id}")]
+    public ActionResult<OrderDto> Get(int id){
+        var orderFromDb = _db.Orders
+            .Include(u => u.Items)
+            .ThenInclude(o => o.Product)
+            .FirstOrDefault();
+        if (orderFromDb == null) return NotFound("Order not found");
+        
+        return Ok(orderFromDb);
     }
 
     [HttpPost]

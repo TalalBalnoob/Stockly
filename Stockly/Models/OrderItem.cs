@@ -16,5 +16,5 @@ public class OrderItem{
     
     
     [ForeignKey("OrderId")] public Order Order { get; set; }
-    [ForeignKey("ProductId ")] public Product Product  { get; set; }
+    [ForeignKey("ProductId")] public Product Product  { get; set; }
 }

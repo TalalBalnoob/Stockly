@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Stockly;
+using Stockly.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("defaultString");
@@ -26,6 +27,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ErrorHanlingMiddleware>();
 app.MapControllers();
 app.UseHttpsRedirection();
 

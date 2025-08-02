@@ -57,4 +57,12 @@ public class StockController: Controller{
 
       return Ok();
    }
+
+   [HttpGet("count/{id}")]
+   public ActionResult<int> GetCount(int id){
+      Product product = _db.Products.FirstOrDefault(u => u.Id == id);
+      if (product == null) return NotFound();
+      
+      return Ok(product.Quantity);
+   }
 }
