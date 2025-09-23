@@ -24,7 +24,8 @@ builder.Services.AddSwaggerGen();
 
 
 builder.Services.AddDbContext<AppDbContext>(option => {
-	option.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+	// option.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+	option.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
 var app = builder.Build();

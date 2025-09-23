@@ -13,7 +13,7 @@ public class OrderItem {
 	[Required] public int ProductId { get; set; }
 	[Required] public int Quantity { get; set; }
 	[Required] public decimal Price { get; set; }
-	[Required] public decimal Subtotle { get; set; }
+	[Required] public decimal Total { get; set; }
 
 
 	[ForeignKey("OrderId")] public Order Order { get; set; }

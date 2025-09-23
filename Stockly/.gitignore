@@ -15,6 +15,9 @@ out/
 # Rider
 .idea/
 
+# SQLITE
+*.db
+
 # ASP.NET artifacts
 wwwroot/dist/
 wwwroot/node_modules/

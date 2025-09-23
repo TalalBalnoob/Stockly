@@ -14,14 +14,9 @@ public class Order {
 	[Required] public decimal Total_amount { get; set; }
 	public List<OrderItem> Items { get; set; } = new();
 
-	// public string PaymentMethod { get; set; } // e.g. "Cash", "Mada"
+	public string? PaymentMethod { get; set; } // e.g. "Cash", "Mada"
 
-	// public string? PaymentNotes { get; set; }
+	public string? PaymentNotes { get; set; }
 
-	[Column(TypeName = "timestamp")]
-	public DateTime CreatedAt { get; set; }
-
-	public Order() {
-		CreatedAt = DateTime.Now;
-	}
+	public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

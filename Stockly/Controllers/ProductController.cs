@@ -35,7 +35,6 @@ public class ProductController : Controller {
 			Description = product.Description ?? "",
 			Price = product.Price,
 			Quantity = product.Quantity,
-			ImageUrl = null,
 			IsActive = product.IsActive != null ? product.IsActive : true,
 		};
 

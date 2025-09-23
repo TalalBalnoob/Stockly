@@ -15,20 +15,7 @@ public class AppDbContext : DbContext {
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder) {
 		base.OnModelCreating(modelBuilder);
-		modelBuilder.Entity<Product>()
-			.Property(p => p.CreatedAt)
-			.HasColumnType("timestamp")
-			.HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-		modelBuilder.Entity<Order>()
-			.Property(p => p.CreatedAt)
-			.HasColumnType("timestamp")
-			.HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-		modelBuilder.Entity<StockAdjustment>()
-			.Property(p => p.CreatedAt)
-			.HasColumnType("timestamp")
-			.HasDefaultValueSql("CURRENT_TIMESTAMP");
 	}
 
 }

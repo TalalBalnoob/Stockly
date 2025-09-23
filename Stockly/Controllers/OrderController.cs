@@ -39,9 +39,9 @@ public class OrderController : Controller {
 			Customer_Name = orderDto.customer_Name,
 			Customer_Contact = orderDto.Customer_Contact,
 			Status = OrderStatuses.Approved,
-			Total_amount = 0
-			// PaymentMethod = orderDto.PaymentMethod ?? "",
-			// PaymentNotes = orderDto.PaymentNotes ?? "",
+			Total_amount = 0,
+			PaymentMethod = orderDto.PaymentMethod ?? "",
+			PaymentNotes = orderDto.PaymentNotes ?? "",
 		};
 
 		List<OrderItem> orderItems = new List<OrderItem>();
@@ -55,11 +55,11 @@ public class OrderController : Controller {
 				Price = item.UnitPrice ?? product.Price,
 				Quantity = item.Quantity,
 				Order = order,
-				Subtotle = item.Quantity * (item.UnitPrice ?? product.Price),
+				Total = item.Quantity * (item.UnitPrice ?? product.Price),
 			};
 			orderItems.Add(newOrderItem);
 
-			order.Total_amount += newOrderItem.Subtotle;
+			order.Total_amount += newOrderItem.Total;
 
 			var ItemStock = new StockAdjustment {
 				Change = -item.Quantity,
@@ -102,7 +102,7 @@ public class OrderController : Controller {
 				Price = item.UnitPrice ?? product.Price,
 				Quantity = item.Quantity,
 				Order = orderFromDb,
-				Subtotle = item.Quantity * (item.UnitPrice ?? product.Price),
+				Total = item.Quantity * (item.UnitPrice ?? product.Price),
 			});
 			product.Quantity -= item.Quantity;
 			if (product.Quantity < 0) {
@@ -146,7 +146,7 @@ public class OrderController : Controller {
 			}
 		}
 
-		orderFromDb.Total_amount = orderItems.Where(x => x.Quantity > 0).Sum(x => x.Subtotle);
+		orderFromDb.Total_amount = orderItems.Where(x => x.Quantity > 0).Sum(x => x.Total);
 		_db.OrderItems.RemoveRange(orderItemsList);
 		_db.OrderItems.AddRange(orderItems);
 		_db.SaveChanges();
