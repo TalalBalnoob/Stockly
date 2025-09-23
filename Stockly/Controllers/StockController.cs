@@ -41,16 +41,16 @@ public class StockController: Controller{
       Product product = _db.Products.FirstOrDefault(u => u.Id == id);
       if (product == null) return NotFound();
 
-      if (product.Quantity + dto.Quantity < 0) 
+      if (dto.Quantity < 0) 
          return BadRequest("Invalid stock adjustment can't get product quantity less than zero");
 
       StockAdjustment adjustment = new StockAdjustment{
-         Change = dto.Quantity,
+         Change = dto.Quantity - product.Quantity,
          Reason = dto.Reason ?? "",
          Product_Id = product.Id
       };
       
-      product.Quantity += dto.Quantity;
+      product.Quantity = dto.Quantity;
 
       _db.StockAdjustment.Add(adjustment);
       _db.SaveChanges();
