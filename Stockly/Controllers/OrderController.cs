@@ -39,7 +39,7 @@ public class OrderController : Controller {
 			Customer_Name = orderDto.customer_Name,
 			Customer_Contact = orderDto.Customer_Contact,
 			Status = OrderStatuses.Approved,
-			Totel_amount = 0
+			Total_amount = 0
 			// PaymentMethod = orderDto.PaymentMethod ?? "",
 			// PaymentNotes = orderDto.PaymentNotes ?? "",
 		};
@@ -59,7 +59,7 @@ public class OrderController : Controller {
 			};
 			orderItems.Add(newOrderItem);
 
-			order.Totel_amount += newOrderItem.Subtotle;
+			order.Total_amount += newOrderItem.Subtotle;
 
 			var ItemStock = new StockAdjustment {
 				Change = -item.Quantity,
@@ -146,7 +146,7 @@ public class OrderController : Controller {
 			}
 		}
 
-		orderFromDb.Totel_amount = orderItems.Where(x => x.Quantity > 0).Sum(x => x.Subtotle);
+		orderFromDb.Total_amount = orderItems.Where(x => x.Quantity > 0).Sum(x => x.Subtotle);
 		_db.OrderItems.RemoveRange(orderItemsList);
 		_db.OrderItems.AddRange(orderItems);
 		_db.SaveChanges();

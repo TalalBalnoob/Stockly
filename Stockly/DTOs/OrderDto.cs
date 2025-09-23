@@ -1,11 +1,11 @@
 namespace Stockly.DTOs;
 
-public class OrderDto{
-    public int?  Id { get; set; }
-    public string? customer_Name { get; set; }
-    public string? Customer_Contact { get; set; }
-    public List<OrderItemDto>? Items { get; set; }
-    // public string? PaymentMethod { get; set; }
-    // public string? PaymentNotes { get; set; }
-    public string? Status { get; set; }
+public class OrderDto {
+	public int? Id { get; set; }
+	public string? customer_Name { get; set; }
+	public string? Customer_Contact { get; set; }
+	public List<OrderItemDto>? Items { get; set; }
+	// public string? PaymentMethod { get; set; }
+	// public string? PaymentNotes { get; set; }
+	public string? Status { get; set; }
 }
