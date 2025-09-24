@@ -7,13 +7,7 @@ namespace Stockly.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ProductController : Controller {
-	private readonly AppDbContext _db;
-
-	public ProductController(AppDbContext db) {
-		_db = db;
-	}
-
+public class ProductController(AppDbContext _db) : Controller {
 	[HttpGet]
 	public ActionResult<Product[]> Index() {
 		var products = _db.Products.ToList();
@@ -28,14 +22,39 @@ public class ProductController : Controller {
 		return Ok(product);
 	}
 
+	[HttpGet("{id}/stock")]
+	public ActionResult<StockDto[]> Get(int id) {
+		Product? product = _db.Products.FirstOrDefault(u => u.Id == id);
+		if (product == null) return NotFound();
+
+		List<StockDto> stock = _db.StockAdjustment.Where(u => u.Product_Id == id).Select(s => new StockDto {
+			Id = s.Id,
+			Change = s.Change,
+			Reason = s.Reason,
+			Product_Id = s.Product_Id,
+			Related_Order_Id = s.Related_Order_Id ?? null,
+			CreatedAt = s.CreatedAt
+		}).ToList();
+
+		return Ok(stock);
+	}
+
+	[HttpGet("{id}/stock/count")]
+	public ActionResult<int> GetCount(int id) {
+		Product? product = _db.Products.FirstOrDefault(u => u.Id == id);
+		if (product == null) return NotFound();
+
+		return Ok(product.Quantity);
+	}
+
 	[HttpPost]
-	public ActionResult<Product> Create(Product product) {
+	public ActionResult<Product> Create(CreateProductDto productDto) {
 		Product newProduct = new Product {
-			Name = product.Name,
-			Description = product.Description ?? "",
-			Price = product.Price,
-			Quantity = product.Quantity,
-			IsActive = product.IsActive != null ? product.IsActive : true,
+			Name = productDto.Name,
+			Description = productDto.Description ?? "",
+			Price = productDto.Price,
+			Quantity = productDto.Quantity,
+			IsActive = productDto.IsActive ?? true,
 		};
 
 		_db.Products.Add(newProduct);
@@ -44,25 +63,47 @@ public class ProductController : Controller {
 	}
 
 	[HttpPut("{id}")]
-	public ActionResult<Product> Update(int id, ProductDto product) {
-		Product productFromDb = _db.Products.FirstOrDefault(u => id == u.Id);
+	public ActionResult<Product> Update(int id, ProductDto productDto) {
+		Product? productFromDb = _db.Products.FirstOrDefault(u => id == u.Id);
 		if (productFromDb == null) return NotFound();
 
-		productFromDb.Name = product.Name ?? productFromDb.Name;
-		productFromDb.Description = product.Description ?? productFromDb.Description;
-		productFromDb.Price = product.Price ?? productFromDb.Price;
-		productFromDb.Quantity = product.Quantity ?? productFromDb.Quantity;
-		// productFromDb.ImageUrl = product.ImageUrl;
-		productFromDb.IsActive = product.IsActive ?? productFromDb.IsActive;
+		productFromDb.Name = productDto.Name ?? productFromDb.Name;
+		productFromDb.Description = productDto.Description ?? productFromDb.Description;
+		productFromDb.Price = productDto.Price ?? productFromDb.Price;
+		productFromDb.Quantity = productDto.Quantity ?? productFromDb.Quantity;
+		productFromDb.IsActive = productDto.IsActive ?? productFromDb.IsActive;
 
 		_db.SaveChanges();
 		return Ok(productFromDb);
 	}
 
+	[HttpPost("'{id}/stock'")]
+	public IActionResult Set(int id, setStockDto dto) {
+		Product? product = _db.Products.FirstOrDefault(u => u.Id == id);
+		if (product == null) return NotFound();
+
+		if (dto.Quantity < 0)
+			return BadRequest("Invalid stock adjustment can't get product quantity less than zero");
+
+		StockAdjustment adjustment = new StockAdjustment {
+			Change = dto.Quantity - product.Quantity,
+			Reason = dto.Reason ?? "",
+			Product_Id = product.Id
+		};
+
+		product.Quantity = dto.Quantity;
+
+		_db.StockAdjustment.Add(adjustment);
+		_db.SaveChanges();
+
+		return Ok();
+	}
+
 	[HttpDelete("{id}")]
 	public ActionResult Delete(int id) {
-		var product = _db.Products.FirstOrDefault(u => id == u.Id);
+		Product? product = _db.Products.FirstOrDefault(u => id == u.Id);
 		if (product == null) return NotFound();
+
 		_db.Products.Remove(product);
 		_db.SaveChanges();
 		return NoContent();

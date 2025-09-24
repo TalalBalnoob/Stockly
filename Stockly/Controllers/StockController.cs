@@ -7,63 +7,20 @@ namespace Stockly.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class StockController : Controller {
-	private readonly AppDbContext _db;
-
-	public StockController(AppDbContext db) {
-		_db = db;
-	}
+public class StockController(AppDbContext _db) : Controller {
 
 	[HttpGet]
-	public ActionResult<StockAdjustment[]> Get() {
+	public ActionResult<StockDto[]> Get() {
 		var stock = _db.StockAdjustment
-		   .Select(s => new {
-			   s.Id,
-			   s.Change,
-			   s.Reason,
-			   s.Product_Id,
-			   s.CreatedAt
+		   .Select(s => new StockDto {
+			   Id = s.Id,
+			   Change = s.Change,
+			   Reason = s.Reason,
+			   Product_Id = s.Product_Id,
+			   Related_Order_Id = s.Related_Order_Id ?? null,
+			   CreatedAt = s.CreatedAt
 		   }).ToList();
 
 		return Ok(stock);
-	}
-
-	[HttpGet("{id}")]
-	public ActionResult<StockAdjustment[]> Get(int id) {
-		Product product = _db.Products.FirstOrDefault(u => u.Id == id);
-		if (product == null) return NotFound();
-
-		List<StockAdjustment> stock = _db.StockAdjustment.Where(u => u.Product_Id == id).ToList();
-		return Ok(stock);
-	}
-
-	[HttpPost("set/{id}")]
-	public IActionResult Set(int id, setStockDto dto) {
-		Product product = _db.Products.FirstOrDefault(u => u.Id == id);
-		if (product == null) return NotFound();
-
-		if (dto.Quantity < 0)
-			return BadRequest("Invalid stock adjustment can't get product quantity less than zero");
-
-		StockAdjustment adjustment = new StockAdjustment {
-			Change = dto.Quantity - product.Quantity,
-			Reason = dto.Reason ?? "",
-			Product_Id = product.Id
-		};
-
-		product.Quantity = dto.Quantity;
-
-		_db.StockAdjustment.Add(adjustment);
-		_db.SaveChanges();
-
-		return Ok();
-	}
-
-	[HttpGet("count/{id}")]
-	public ActionResult<int> GetCount(int id) {
-		Product product = _db.Products.FirstOrDefault(u => u.Id == id);
-		if (product == null) return NotFound();
-
-		return Ok(product.Quantity);
 	}
 }
