@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Stockly;
 
@@ -10,9 +11,11 @@ using Stockly;
 namespace Stockly.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250924062225_SeedProducts")]
+    partial class SeedProducts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
@@ -27,19 +30,15 @@ namespace Stockly.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Customer_Contact")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Customer_Name")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PaymentMethod")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PaymentNotes")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Status")
@@ -94,7 +93,6 @@ namespace Stockly.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsActive")
@@ -111,7 +109,6 @@ namespace Stockly.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Storage_Note")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -149,8 +146,7 @@ namespace Stockly.Migrations
                             IsActive = true,
                             Name = "Headphones",
                             Price = 200m,
-                            Quantity = 30,
-                            Storage_Note = ""
+                            Quantity = 30
                         },
                         new
                         {
@@ -160,8 +156,7 @@ namespace Stockly.Migrations
                             IsActive = true,
                             Name = "Keyboard",
                             Price = 100m,
-                            Quantity = 40,
-                            Storage_Note = ""
+                            Quantity = 40
                         },
                         new
                         {
@@ -171,8 +166,7 @@ namespace Stockly.Migrations
                             IsActive = true,
                             Name = "Mouse",
                             Price = 50m,
-                            Quantity = 50,
-                            Storage_Note = ""
+                            Quantity = 50
                         },
                         new
                         {
@@ -182,8 +176,7 @@ namespace Stockly.Migrations
                             IsActive = true,
                             Name = "Monitor",
                             Price = 250m,
-                            Quantity = 15,
-                            Storage_Note = ""
+                            Quantity = 15
                         },
                         new
                         {
@@ -193,8 +186,7 @@ namespace Stockly.Migrations
                             IsActive = true,
                             Name = "Printer",
                             Price = 300m,
-                            Quantity = 5,
-                            Storage_Note = ""
+                            Quantity = 5
                         },
                         new
                         {
@@ -204,8 +196,7 @@ namespace Stockly.Migrations
                             IsActive = true,
                             Name = "Tablet",
                             Price = 400m,
-                            Quantity = 12,
-                            Storage_Note = ""
+                            Quantity = 12
                         },
                         new
                         {
@@ -215,8 +206,7 @@ namespace Stockly.Migrations
                             IsActive = true,
                             Name = "Desk",
                             Price = 150m,
-                            Quantity = 7,
-                            Storage_Note = ""
+                            Quantity = 7
                         },
                         new
                         {
@@ -226,8 +216,7 @@ namespace Stockly.Migrations
                             IsActive = true,
                             Name = "Chair",
                             Price = 180m,
-                            Quantity = 9,
-                            Storage_Note = ""
+                            Quantity = 9
                         });
                 });
 
@@ -241,13 +230,12 @@ namespace Stockly.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp");
 
                     b.Property<int>("Product_Id")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Reason")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("Related_Order_Id")

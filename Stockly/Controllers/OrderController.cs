@@ -9,24 +9,47 @@ namespace Stockly.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class OrderController : Controller {
-	private readonly AppDbContext _db;
-
-	public OrderController(AppDbContext db) {
-		_db = db;
-	}
+public class OrderController(AppDbContext _db) : Controller {
 
 	[HttpGet]
-	public ActionResult<IEnumerable<OrderDto>> Get() {
-		var orders = _db.Orders.ToList();
+	public ActionResult<IEnumerable<CreateOrderDto>> Get() {
+		var orders = _db.Orders.Include(u => u.Items).Select(o => new OrderDto {
+			Id = o.Id,
+			Customer_name = o.Customer_Name,
+			Customer_contact = o.Customer_Contact,
+			Payment_method = o.PaymentMethod,
+			Payment_notes = o.PaymentNotes,
+			Status = o.Status,
+			Order_total = o.Total_amount,
+			Items = o.Items.Select(i => new OrderItemDto {
+				orderId = i.OrderId,
+				productId = i.ProductId,
+				Quantity = i.Quantity,
+				UnitPrice = i.Price,
+			}).ToList()
+		}).ToList();
 		return Ok(orders);
 	}
 
 	[HttpGet("{id}")]
-	public ActionResult<OrderDto> Get(int id) {
+	public ActionResult<CreateOrderDto> Get(int id) {
 		var orderFromDb = _db.Orders
-			.Include(u => u.Items)
-			.ThenInclude(o => o.Product)
+			.Include(u => u.Items).Select(o => new OrderDto {
+				Id = o.Id,
+				Customer_name = o.Customer_Name,
+				Customer_contact = o.Customer_Contact,
+				Payment_method = o.PaymentMethod,
+				Payment_notes = o.PaymentNotes,
+				Status = o.Status,
+				Order_total = o.Total_amount,
+				Items = o.Items.Select(i => new OrderItemDto {
+					id = i.Id,
+					orderId = i.OrderId,
+					productId = i.ProductId,
+					Quantity = i.Quantity,
+					UnitPrice = i.Price,
+				}).ToList()
+			})
 			.FirstOrDefault();
 		if (orderFromDb == null) return NotFound("Order not found");
 
@@ -34,14 +57,16 @@ public class OrderController : Controller {
 	}
 
 	[HttpPost]
-	public ActionResult Create(OrderDto orderDto) {
+	public ActionResult Create(CreateOrderDto orderDto) {
 		Order order = new Order {
-			Customer_Name = orderDto.customer_Name,
-			Customer_Contact = orderDto.Customer_Contact,
-			Status = OrderStatuses.Approved,
+			Id = 0,
+			Customer_Name = orderDto.customer_Name ?? "",
+			Customer_Contact = orderDto.Customer_Contact ?? "",
+			Status = orderDto.Status ?? OrderStatuses.Payment_Pending,
 			Total_amount = 0,
-			PaymentMethod = orderDto.PaymentMethod ?? "",
+			PaymentMethod = orderDto.PaymentMethod ?? PaymentMethods.None,
 			PaymentNotes = orderDto.PaymentNotes ?? "",
+			CreatedAt = DateTime.Now,
 		};
 
 		List<OrderItem> orderItems = new List<OrderItem>();
@@ -80,23 +105,28 @@ public class OrderController : Controller {
 	}
 
 	[HttpPut("{id}")]
-	public ActionResult Update(int id, OrderDto orderDto) {
+	public ActionResult Update(int id, CreateOrderDto orderDto) {
 		var orderFromDb = _db.Orders.Find(id);
 		if (orderFromDb == null) return NotFound("Order not found");
 
 		var orderItemsList = _db.OrderItems.Where(x => x.OrderId == id).ToList();
 		foreach (var orderItem in orderItemsList) {
 			var product = _db.Products.Find(orderItem.ProductId);
+			if (product == null) return NotFound("Product not found");
 			product.Quantity += orderItem.Quantity;
 		}
 
-		orderFromDb.Customer_Name = orderDto.customer_Name;
-		orderFromDb.Customer_Contact = orderDto.Customer_Contact;
+		orderFromDb.Customer_Name = orderDto.customer_Name ?? "";
+		orderFromDb.Customer_Contact = orderDto.Customer_Contact ?? "";
 		orderFromDb.Status = orderDto.Status ?? orderFromDb.Status;
+		orderFromDb.PaymentMethod = orderDto.PaymentMethod ?? orderFromDb.PaymentMethod;
+		orderFromDb.PaymentNotes = orderDto.PaymentNotes ?? orderFromDb.PaymentNotes;
 
 		List<OrderItem> orderItems = new List<OrderItem>();
 		foreach (var item in orderDto.Items) {
 			var product = _db.Products.Find(item.productId);
+			if (product == null) return NotFound("Product not found");
+
 			orderItems.Add(new OrderItem {
 				ProductId = item.productId,
 				Price = item.UnitPrice ?? product.Price,
@@ -105,6 +135,7 @@ public class OrderController : Controller {
 				Total = item.Quantity * (item.UnitPrice ?? product.Price),
 			});
 			product.Quantity -= item.Quantity;
+
 			if (product.Quantity < 0) {
 				return BadRequest("Insufficient quantity");
 			}
@@ -154,6 +185,21 @@ public class OrderController : Controller {
 		return Ok();
 	}
 
+	[HttpPut("approve/{id}")]
+	public ActionResult Approve(int id) {
+		var orderFromDb = _db.Orders.Find(id);
+		if (orderFromDb == null) return NotFound("Order not found");
+
+		if (orderFromDb.Status == OrderStatuses.Payment_Pending) {
+			orderFromDb.Status = OrderStatuses.Approved;
+			_db.SaveChanges();
+			return Ok("order Approved");
+		}
+		else {
+			return BadRequest("order not Approved");
+		}
+	}
+
 	[HttpPut("ship/{id}")]
 	public ActionResult Ship(int id) {
 		var orderFromDb = _db.Orders.Find(id);
@@ -185,7 +231,7 @@ public class OrderController : Controller {
 	}
 
 	[HttpPut("return/{id}")]
-	public ActionResult Return(int id) {
+	public ActionResult Return(int id, [FromQuery] bool restock = true) {
 		var orderFromDb = _db.Orders.Find(id);
 		if (orderFromDb == null) return NotFound("Order not found");
 
@@ -193,9 +239,15 @@ public class OrderController : Controller {
 			return BadRequest("can't return order unless shipped or delivered");
 		orderFromDb.Status = OrderStatuses.Returned;
 
+		if (!restock) {
+			_db.SaveChanges();
+			return Ok("order returned without restocking");
+		}
+
 		var orderItems = _db.OrderItems.Where(x => x.OrderId == id).ToList();
 		foreach (var orderItem in orderItems) {
 			var product = _db.Products.Find(orderItem.ProductId);
+			if (product == null) return NotFound("Product not found");
 			product.Quantity += orderItem.Quantity;
 
 			var stockAdjustment = new StockAdjustment {
@@ -208,17 +260,22 @@ public class OrderController : Controller {
 		}
 
 		_db.SaveChanges();
-		return Ok("order shipped");
+		return Ok("order returned and restocked");
 	}
 
 	[HttpPut("cancel/{id}")]
-	public ActionResult CancelOrder(int id) {
+	public ActionResult CancelOrder(int id, [FromQuery] bool restock = true) {
 		var orderFromDb = _db.Orders.Find(id);
 		if (orderFromDb == null) return NotFound("Order not found");
 
 		if (orderFromDb.Status != OrderStatuses.Approved)
 			return BadRequest("can't return order unless approved");
 		orderFromDb.Status = OrderStatuses.Cancelled;
+
+		if (!restock) {
+			_db.SaveChanges();
+			return NoContent();
+		}
 
 		List<OrderItem> orderItems = _db.OrderItems.Where(x => x.OrderId == id).ToList();
 		foreach (var item in orderItems) {
@@ -229,7 +286,6 @@ public class OrderController : Controller {
 				Product_Id = item.ProductId,
 				Related_Order_Id = item.OrderId,
 			};
-
 			product.Quantity += item.Quantity;
 			_db.StockAdjustment.Add(ItemStock);
 		}
@@ -244,21 +300,27 @@ public class OrderController : Controller {
 		if (order == null) return NotFound("Order not found");
 
 		List<OrderItem> orderItems = _db.OrderItems.Where(x => x.OrderId == id).ToList();
-		if (order.Status != OrderStatuses.Cancelled) {
-			order.Status = OrderStatuses.Cancelled;
 
-			foreach (var item in orderItems) {
-				var product = _db.Products.Find(item.ProductId);
-				var ItemStock = new StockAdjustment {
-					Change = item.Quantity,
-					Reason = "Cancelled order",
-					Product_Id = item.ProductId,
-					Related_Order_Id = item.OrderId,
-				};
-				product.Quantity += item.Quantity;
-				_db.StockAdjustment.Add(ItemStock);
-			}
-		}
+		// NOTE: Uncomment the following code block if you want to restock items when an order is deleted.
+		// However, this might not be the desired behavior in all scenarios.
+
+		// Restock items if order is not already cancelled
+
+		// if (order.Status != OrderStatuses.Cancelled) {
+		// 	order.Status = OrderStatuses.Cancelled;
+
+		// 	foreach (var item in orderItems) {
+		// 		var product = _db.Products.Find(item.ProductId);
+		// 		var ItemStock = new StockAdjustment {
+		// 			Change = item.Quantity,
+		// 			Reason = "Cancelled order",
+		// 			Product_Id = item.ProductId,
+		// 			Related_Order_Id = item.OrderId,
+		// 		};
+		// 		product.Quantity += item.Quantity;
+		// 		_db.StockAdjustment.Add(ItemStock);
+		// 	}
+		// }
 
 		_db.OrderItems.RemoveRange(orderItems);
 		_db.Orders.Remove(order);
