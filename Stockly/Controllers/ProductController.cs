@@ -69,6 +69,7 @@ public class ProductController(AppDbContext _db) : Controller {
 
 		productFromDb.Name = productDto.Name ?? productFromDb.Name;
 		productFromDb.Description = productDto.Description ?? productFromDb.Description;
+		productFromDb.Storage_Note = productDto.Storage_Note ?? productFromDb.Storage_Note;
 		productFromDb.Price = productDto.Price ?? productFromDb.Price;
 		productFromDb.Quantity = productDto.Quantity ?? productFromDb.Quantity;
 		productFromDb.IsActive = productDto.IsActive ?? productFromDb.IsActive;
