@@ -2,15 +2,30 @@ using Microsoft.AspNetCore.Mvc;
 
 using Stockly.DTOs;
 using Stockly.Models;
+using Stockly.Services;
 
 namespace Stockly.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
 public class ProductController(AppDbContext _db) : Controller {
+	public async Task<PagedResult<Product>> GetProductsAsync(ProductPaginationParams paginationParams) {
+		var query = _db.Products.AsQueryable();
+
+		var totalCount = query.Count();
+
+		var items = query
+			.OrderBy(p => p.Id) // always order for consistent paging
+			.Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+			.Take(paginationParams.PageSize)
+			.ToList();
+
+		return new PagedResult<Product>(items, totalCount, paginationParams.PageNumber, paginationParams.PageSize);
+	}
+
 	[HttpGet]
-	public ActionResult<Product[]> Index() {
-		var products = _db.Products.ToList();
+	public ActionResult<Product[]> Index([FromQuery] ProductPaginationParams paginationParams) {
+		var products = GetProductsAsync(paginationParams).Result;
 		return Ok(products);
 	}
 
