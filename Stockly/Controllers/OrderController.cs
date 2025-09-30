@@ -15,10 +15,10 @@ public class OrderController(AppDbContext _db) : Controller {
 	public ActionResult<IEnumerable<CreateOrderDto>> Get() {
 		var orders = _db.Orders.Include(u => u.Items).Select(o => new OrderDto {
 			Id = o.Id,
-			Customer_name = o.Customer_Name,
-			Customer_contact = o.Customer_Contact,
-			Payment_method = o.PaymentMethod,
-			Payment_notes = o.PaymentNotes,
+			Customer_name = o.Customer_name,
+			Customer_contact = o.Customer_contact,
+			Payment_method = o.Payment_method,
+			Payment_notes = o.Payment_notes,
 			Status = o.Status,
 			Order_total = o.Total_amount,
 			Items = o.Items.Select(i => new OrderItemDto {
@@ -36,10 +36,10 @@ public class OrderController(AppDbContext _db) : Controller {
 		var orderFromDb = _db.Orders
 			.Include(u => u.Items).Select(o => new OrderDto {
 				Id = o.Id,
-				Customer_name = o.Customer_Name,
-				Customer_contact = o.Customer_Contact,
-				Payment_method = o.PaymentMethod,
-				Payment_notes = o.PaymentNotes,
+				Customer_name = o.Customer_name,
+				Customer_contact = o.Customer_contact,
+				Payment_method = o.Payment_method,
+				Payment_notes = o.Payment_notes,
 				Status = o.Status,
 				Order_total = o.Total_amount,
 				Items = o.Items.Select(i => new OrderItemDto {
@@ -50,7 +50,7 @@ public class OrderController(AppDbContext _db) : Controller {
 					UnitPrice = i.Price,
 				}).ToList()
 			})
-			.FirstOrDefault();
+			.FirstOrDefault(o => o.Id == id);
 		if (orderFromDb == null) return NotFound("Order not found");
 
 		return Ok(orderFromDb);
@@ -60,12 +60,12 @@ public class OrderController(AppDbContext _db) : Controller {
 	public ActionResult Create(CreateOrderDto orderDto) {
 		Order order = new Order {
 			Id = 0,
-			Customer_Name = orderDto.customer_Name ?? "",
-			Customer_Contact = orderDto.Customer_Contact ?? "",
+			Customer_name = orderDto.Customer_name ?? "",
+			Customer_contact = orderDto.Customer_contact ?? "",
 			Status = orderDto.Status ?? OrderStatuses.Payment_Pending,
 			Total_amount = 0,
-			PaymentMethod = orderDto.PaymentMethod ?? PaymentMethods.None,
-			PaymentNotes = orderDto.PaymentNotes ?? "",
+			Payment_method = orderDto.Payment_method ?? PaymentMethods.None,
+			Payment_notes = orderDto.Payment_notes ?? "",
 			CreatedAt = DateTime.Now,
 		};
 
@@ -116,11 +116,11 @@ public class OrderController(AppDbContext _db) : Controller {
 			product.Quantity += orderItem.Quantity;
 		}
 
-		orderFromDb.Customer_Name = orderDto.customer_Name ?? "";
-		orderFromDb.Customer_Contact = orderDto.Customer_Contact ?? "";
+		orderFromDb.Customer_name = orderDto.Customer_name ?? "";
+		orderFromDb.Customer_contact = orderDto.Customer_contact ?? "";
 		orderFromDb.Status = orderDto.Status ?? orderFromDb.Status;
-		orderFromDb.PaymentMethod = orderDto.PaymentMethod ?? orderFromDb.PaymentMethod;
-		orderFromDb.PaymentNotes = orderDto.PaymentNotes ?? orderFromDb.PaymentNotes;
+		orderFromDb.Payment_method = orderDto.Payment_method ?? orderFromDb.Payment_method;
+		orderFromDb.Payment_notes = orderDto.Payment_notes ?? orderFromDb.Payment_notes;
 
 		List<OrderItem> orderItems = new List<OrderItem>();
 		foreach (var item in orderDto.Items) {
