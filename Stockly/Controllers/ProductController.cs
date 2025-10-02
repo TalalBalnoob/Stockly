@@ -24,9 +24,9 @@ public class ProductController(AppDbContext _db) : Controller {
 	}
 
 	[HttpGet]
-	public ActionResult<Product[]> Index([FromQuery] ProductPaginationParams paginationParams, [FromQuery] string? nonDisabled) {
+	public ActionResult<Product[]> Index([FromQuery] ProductPaginationParams paginationParams, [FromQuery] bool? nonDisabled) {
 		var products = GetProductsAsync(paginationParams).Result;
-		products.Items = nonDisabled == "true" ? products.Items.Where(p => p.IsActive).ToArray() : products.Items;
+		products.Items = nonDisabled == true ? products.Items.Where(p => p.IsActive == true).ToArray() : products.Items;
 		return Ok(products);
 	}
 
