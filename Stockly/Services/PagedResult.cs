@@ -1,5 +1,7 @@
 using System;
 
+using Stockly.DTOs;
+
 namespace Stockly.Services;
 
 public class PagedResult<T> {
@@ -14,4 +16,5 @@ public class PagedResult<T> {
 		PageNumber = pageNumber;
 		PageSize = pageSize;
 	}
+
 }

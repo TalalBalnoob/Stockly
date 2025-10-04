@@ -7,6 +7,7 @@ public class StockDto {
 	public int? Change { get; set; }
 	public string? Reason { get; set; }
 	public int? Product_Id { get; set; }
+	public string? Product_Name { get; set; }
 	public DateTime? CreatedAt { get; set; }
 	public int? Related_Order_Id { get; set; }
 }

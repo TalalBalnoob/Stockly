@@ -90,7 +90,7 @@ public class OrderController(AppDbContext _db) : Controller {
 				Change = -item.Quantity,
 				Reason = "order",
 				Product_Id = item.productId,
-				Related_Order_Id = item.orderId
+				Related_Order = order
 			};
 			_db.StockAdjustment.Add(ItemStock);
 
