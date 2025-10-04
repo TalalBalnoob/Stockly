@@ -17,6 +17,8 @@ out/
 
 # SQLITE
 *.db
+*.db-shm
+*.db-wal
 
 # ASP.NET artifacts
 wwwroot/dist/
