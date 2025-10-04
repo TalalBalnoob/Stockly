@@ -141,6 +141,7 @@ public class OrderController(AppDbContext _db) : Controller {
 			}
 		}
 
+		// FIXME: Error Here
 		foreach (var item in orderItems) {
 			var existing = orderItemsList.FirstOrDefault(x => x.ProductId == item.ProductId);
 
@@ -149,17 +150,17 @@ public class OrderController(AppDbContext _db) : Controller {
 					Product_Id = item.ProductId,
 					Change = -item.Quantity,
 					Reason = "Order Updated",
-					Related_Order_Id = item.OrderId
+					Related_Order = orderFromDb
 				};
 				_db.StockAdjustment.Add(adjustment);
 			}
 			else if (existing.Quantity != item.Quantity) {
-				int diff = item.Quantity - existing.Quantity;
+				int diff = existing.Quantity - item.Quantity;
 				var adjustment = new StockAdjustment {
 					Product_Id = item.ProductId,
-					Change = -diff,
+					Change = diff,
 					Reason = "Order Updated",
-					Related_Order_Id = item.OrderId
+					Related_Order = orderFromDb
 				};
 				_db.StockAdjustment.Add(adjustment);
 			}

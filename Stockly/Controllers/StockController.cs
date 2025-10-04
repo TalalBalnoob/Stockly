@@ -16,7 +16,7 @@ public class StockController(AppDbContext _db) : Controller {
 		var totalCount = query.Count();
 
 		var items = query
-			.OrderBy(p => p.Id) // always order for consistent paging
+			.OrderByDescending(p => p.CreatedAt)
 			.Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
 			.Take(paginationParams.PageSize)
 			.Include(s => s.Product)
