@@ -13,7 +13,7 @@ public class OrderController(AppDbContext _db) : Controller {
 
 	[HttpGet]
 	public ActionResult<IEnumerable<CreateOrderDto>> Get() {
-		var orders = _db.Orders.Include(u => u.Items).Select(o => new OrderDto {
+		var orders = _db.Orders.Include(u => u.Items).OrderByDescending(o => o.CreatedAt).Select(o => new OrderDto {
 			Id = o.Id,
 			Customer_name = o.Customer_name,
 			Customer_contact = o.Customer_contact,
@@ -141,7 +141,6 @@ public class OrderController(AppDbContext _db) : Controller {
 			}
 		}
 
-		// FIXME: Error Here
 		foreach (var item in orderItems) {
 			var existing = orderItemsList.FirstOrDefault(x => x.ProductId == item.ProductId);
 
