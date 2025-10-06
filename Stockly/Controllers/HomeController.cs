@@ -53,6 +53,7 @@ namespace Stockly.Controllers {
 			.GroupBy(oi => oi.ProductId)
 			.Select(g => new {
 				Product_id = g.Key,
+				Product_name = g.First().Product.Name,
 				TotalSold = g.Sum(oi => oi.Quantity)
 			})
 			.OrderByDescending(g => g.TotalSold)
