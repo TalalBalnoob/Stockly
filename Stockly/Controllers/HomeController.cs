@@ -49,13 +49,24 @@ namespace Stockly.Controllers {
 				}).ToList()
 			}).Take(5).ToList();
 
+			var mostSoldProducts = db.OrderItems
+			.GroupBy(oi => oi.ProductId)
+			.Select(g => new {
+				Product_id = g.Key,
+				TotalSold = g.Sum(oi => oi.Quantity)
+			})
+			.OrderByDescending(g => g.TotalSold)
+			.Take(5)
+			.ToList();
+
 			return Ok(new {
 				ProductsCount = productsCount,
 				OrdersCount = ordersCount,
 				UnShippedOrdersCount = unShippedOrdersCount,
 				PendingOrdersCount = pendingOrdersCount,
 				ProductsStorage = productsStorage,
-				LatestOrders = latestOrders
+				LatestOrders = latestOrders,
+				MostSoldProducts = mostSoldProducts
 			});
 		}
 	}
