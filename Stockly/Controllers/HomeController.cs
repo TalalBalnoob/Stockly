@@ -11,10 +11,10 @@ namespace Stockly.Controllers {
 	public class HomeController(AppDbContext db) : ControllerBase {
 		[HttpGet]
 		public IActionResult Get() {
-			var productsCount = db.Products.Count();
-			var ordersCount = db.Orders.Count();
-			var pendingOrdersCount = db.Orders.Count(o => o.Status == "Pending");
-			var unShippedOrdersCount = db.Orders
+			int productsCount = db.Products.Count();
+			int ordersCount = db.Orders.Count();
+			int pendingOrdersCount = db.Orders.Count(o => o.Status == "Pending");
+			int unShippedOrdersCount = db.Orders
 			.Count(o => o.Status != "Shipped" || o.Status != "Delivered" || o.Status != "Cancelled" || o.Status != "Returned");
 
 			var productsStorage = db.Products
@@ -31,7 +31,8 @@ namespace Stockly.Controllers {
 				Quantity = db.Products.Sum(p => p.Quantity) - productsStorage.Sum(p => p.Quantity)
 			});
 
-			var latestOrders = db.Orders.Include(u => u.Items)
+			var latestOrders = db.Orders
+			.Include(u => u.Items)
 			.OrderByDescending(o => o.CreatedAt)
 			.Select(o => new OrderDto {
 				Id = o.Id,
@@ -47,7 +48,9 @@ namespace Stockly.Controllers {
 					Quantity = i.Quantity,
 					UnitPrice = i.Price,
 				}).ToList()
-			}).Take(5).ToList();
+			})
+			.Take(5)
+			.ToList();
 
 			var mostSoldProducts = db.OrderItems
 			.GroupBy(oi => oi.ProductId)
@@ -60,6 +63,17 @@ namespace Stockly.Controllers {
 			.Take(5)
 			.ToList();
 
+			var ordersPerMonth = db.Orders
+			.GroupBy(o => new { o.CreatedAt.Year, o.CreatedAt.Month })
+			.Select(g => new {
+				year = g.Key.Year,
+				month = g.Key.Month,
+				month_name = new DateTime(g.Key.Year, g.Key.Month, 1).ToString("MMM"),
+				orders_count = g.Count()
+			})
+			.OrderBy(g => g.year).ThenBy(g => g.month)
+			.ToList();
+
 			return Ok(new {
 				ProductsCount = productsCount,
 				OrdersCount = ordersCount,
@@ -67,7 +81,8 @@ namespace Stockly.Controllers {
 				PendingOrdersCount = pendingOrdersCount,
 				ProductsStorage = productsStorage,
 				LatestOrders = latestOrders,
-				MostSoldProducts = mostSoldProducts
+				MostSoldProducts = mostSoldProducts,
+				OrdersPerMonth = ordersPerMonth
 			});
 		}
 	}
