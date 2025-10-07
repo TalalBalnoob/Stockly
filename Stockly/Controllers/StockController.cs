@@ -10,7 +10,7 @@ namespace Stockly.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class StockController(AppDbContext _db) : Controller {
-	public async Task<PagedResult<StockDto>> GetStocksAsync(ProductPaginationParams paginationParams) {
+	public async Task<PagedResult<StockDto>> GetStocksAsync(PaginationParams paginationParams) {
 		var query = _db.StockAdjustment.AsQueryable();
 
 		var totalCount = query.Count();
@@ -35,7 +35,7 @@ public class StockController(AppDbContext _db) : Controller {
 	}
 
 	[HttpGet]
-	public ActionResult<StockDto[]> Get([FromQuery] ProductPaginationParams paginationParams) {
+	public ActionResult<StockDto[]> Get([FromQuery] PaginationParams paginationParams) {
 		var stock = GetStocksAsync(paginationParams).Result;
 
 		return Ok(stock);

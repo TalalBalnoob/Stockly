@@ -2,7 +2,7 @@ using System;
 
 namespace Stockly.DTOs;
 
-public class ProductPaginationParams {
+public class PaginationParams {
 	private const int MaxPageSize = 50;
 	public int PageNumber { get; set; } = 1;
 

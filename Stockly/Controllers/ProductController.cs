@@ -9,7 +9,7 @@ namespace Stockly.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class ProductController(AppDbContext _db) : Controller {
-	public async Task<PagedResult<Product>> GetProductsAsync(ProductPaginationParams paginationParams) {
+	public async Task<PagedResult<Product>> GetProductsAsync(PaginationParams paginationParams) {
 		var query = _db.Products.AsQueryable();
 
 		var totalCount = query.Count();
@@ -24,7 +24,7 @@ public class ProductController(AppDbContext _db) : Controller {
 	}
 
 	[HttpGet]
-	public ActionResult<Product[]> Index([FromQuery] ProductPaginationParams paginationParams, [FromQuery] bool? nonDisabled) {
+	public ActionResult<Product[]> Index([FromQuery] PaginationParams paginationParams, [FromQuery] bool? nonDisabled) {
 		var products = GetProductsAsync(paginationParams).Result;
 		products.Items = nonDisabled == true ? products.Items.Where(p => p.IsActive == true).ToArray() : products.Items;
 		return Ok(products);
