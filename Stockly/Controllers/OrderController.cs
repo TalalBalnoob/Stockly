@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 using Stockly.DTOs;
 using Stockly.Models;
+using Stockly.Services;
 using Stockly.Statics;
 
 namespace Stockly.Controllers;
@@ -10,26 +11,38 @@ namespace Stockly.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class OrderController(AppDbContext _db) : Controller {
+	public async Task<PagedResult<OrderDto>> GetOrdersAsync(PaginationParams paginationParams) {
+		var query = _db.Orders.AsQueryable();
+
+		var totalCount = query.Count();
+
+		var items = query.Include(o => o.Items)
+			.OrderByDescending(o => o.CreatedAt)
+			.Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+			.Take(paginationParams.PageSize)
+			.Select(o => new OrderDto {
+				Id = o.Id,
+				Customer_name = o.Customer_name,
+				Customer_contact = o.Customer_contact,
+				Payment_method = o.Payment_method,
+				Payment_notes = o.Payment_notes,
+				Status = o.Status,
+				Order_total = o.Total_amount,
+				Items = o.Items.Select(i => new OrderItemDto {
+					orderId = i.OrderId,
+					productId = i.ProductId,
+					Quantity = i.Quantity,
+					UnitPrice = i.Price,
+				}).ToList()
+			}).ToList();
+
+		return new PagedResult<OrderDto>(items, totalCount, paginationParams.PageNumber, paginationParams.PageSize);
+	}
 
 	[HttpGet]
-	public ActionResult<IEnumerable<CreateOrderDto>> Get() {
-		var orders = _db.Orders.Include(u => u.Items)
-		.OrderByDescending(o => o.CreatedAt)
-		.Select(o => new OrderDto {
-			Id = o.Id,
-			Customer_name = o.Customer_name,
-			Customer_contact = o.Customer_contact,
-			Payment_method = o.Payment_method,
-			Payment_notes = o.Payment_notes,
-			Status = o.Status,
-			Order_total = o.Total_amount,
-			Items = o.Items.Select(i => new OrderItemDto {
-				orderId = i.OrderId,
-				productId = i.ProductId,
-				Quantity = i.Quantity,
-				UnitPrice = i.Price,
-			}).ToList()
-		}).ToList();
+	public ActionResult<IEnumerable<CreateOrderDto>> Get([FromQuery] PaginationParams paginationParams) {
+		var orders = GetOrdersAsync(paginationParams).Result;
+
 		return Ok(orders);
 	}
 
