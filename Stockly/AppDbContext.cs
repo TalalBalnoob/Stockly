@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 
 using Stockly.Models;
+using Stockly.Statics;
 
 namespace Stockly;
 
@@ -30,6 +31,25 @@ public class AppDbContext : DbContext {
 			new Product { Id = 9, Name = "Desk", Description = "Wooden office desk", Price = 150, Quantity = 7, IsActive = true, CreatedAt = seedDate },
 			new Product { Id = 10, Name = "Chair", Description = "Ergonomic office chair", Price = 180, Quantity = 9, IsActive = true, CreatedAt = seedDate }
 		);
-	}
 
+		// Static order seeding
+		var orders = new List<Order>();
+		var baseDate = new DateTime(2024, 10, 1); // start from a year ago
+		var daysStep = 365 / 100; // ~3-4 days between each order
+
+		for (int i = 1; i <= 100; i++) {
+			orders.Add(new Order {
+				Id = i,
+				Customer_name = $"Customer {i}",
+				Customer_contact = $"050{i:D5}",
+				Status = OrderStatuses.Approved,
+				Total_amount = 50 + (i * 10) % 400, // random-like variation
+				Payment_method = i % 2 == 0 ? PaymentMethods.Cash : PaymentMethods.Mada,
+				Payment_notes = "Auto-generated test order",
+				CreatedAt = baseDate.AddDays(i * daysStep)
+			});
+		}
+
+		modelBuilder.Entity<Order>().HasData(orders);
+	}
 }
