@@ -15,10 +15,9 @@ public class HomeController(AppDbContext db) : ControllerBase {
 		int ordersCount = await db.Orders.CountAsync();
 		int pendingOrdersCount = await db.Orders.CountAsync(o => o.Status == "Pending");
 		int unshippedOrdersCount = await db.Orders.CountAsync(o =>
-			o.Status != "Shipped" &&
-			o.Status != "Delivered" &&
-			o.Status != "Cancelled" &&
-			o.Status != "Returned"
+			o.Status == "approved" ||
+			o.Status == "on hold" ||
+			o.Status == "payment pending"
 		);
 
 		// Products storage
