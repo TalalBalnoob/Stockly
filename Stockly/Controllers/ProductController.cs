@@ -9,13 +9,19 @@ namespace Stockly.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class ProductController(AppDbContext _db) : Controller {
-	public async Task<PagedResult<Product>> GetProductsAsync(PaginationParams paginationParams) {
+	public async Task<PagedResult<Product>> GetProductsAsync(PaginationParams paginationParams, string? search = null) {
 		var query = _db.Products.AsQueryable();
 
 		var totalCount = query.Count();
 
 		var items = query
 			.OrderBy(p => p.Id) // always order for consistent paging
+			.Where(p => string.IsNullOrEmpty(search) ||
+				p.Name.ToLower().Contains(search.ToLower()) ||
+				p.Price.ToString().Contains(search.ToLower()) ||
+				p.Quantity.ToString().Contains(search.ToLower()) ||
+				p.Storage_Note.ToLower().Contains(search.ToLower())
+			)
 			.Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
 			.Take(paginationParams.PageSize)
 			.ToList();
@@ -24,8 +30,8 @@ public class ProductController(AppDbContext _db) : Controller {
 	}
 
 	[HttpGet]
-	public ActionResult<Product[]> Index([FromQuery] PaginationParams paginationParams, [FromQuery] bool? nonDisabled) {
-		var products = GetProductsAsync(paginationParams).Result;
+	public ActionResult<Product[]> Index([FromQuery] PaginationParams paginationParams, [FromQuery] bool? nonDisabled, [FromQuery] string? search = null) {
+		var products = GetProductsAsync(paginationParams, search).Result;
 		products.Items = nonDisabled == true ? products.Items.Where(p => p.IsActive == true).ToArray() : products.Items;
 		return Ok(products);
 	}
