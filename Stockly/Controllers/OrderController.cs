@@ -11,12 +11,19 @@ namespace Stockly.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class OrderController(AppDbContext _db) : Controller {
-	public async Task<PagedResult<OrderDto>> GetOrdersAsync(PaginationParams paginationParams) {
+	public async Task<PagedResult<OrderDto>> GetOrdersAsync(PaginationParams paginationParams, string? search = null) {
 		var query = _db.Orders.AsQueryable();
 
 		var totalCount = query.Count();
 
 		var items = query.Include(o => o.Items)
+			.ThenInclude(i => i.Product)
+			.Where(o => string.IsNullOrEmpty(search) ||
+				o.Customer_name.ToLower().Contains(search.ToLower()) ||
+				o.Customer_contact.ToLower().Contains(search.ToLower()) ||
+				o.Payment_notes.ToLower().Contains(search.ToLower()) ||
+				o.Items.Any(i => i.Product.Name.ToLower().Contains(search.ToLower()))
+			)
 			.OrderByDescending(o => o.CreatedAt)
 			.Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
 			.Take(paginationParams.PageSize)
@@ -40,8 +47,8 @@ public class OrderController(AppDbContext _db) : Controller {
 	}
 
 	[HttpGet]
-	public ActionResult<IEnumerable<CreateOrderDto>> Get([FromQuery] PaginationParams paginationParams) {
-		var orders = GetOrdersAsync(paginationParams).Result;
+	public ActionResult<IEnumerable<CreateOrderDto>> Get([FromQuery] PaginationParams paginationParams, [FromQuery] string? search = null) {
+		var orders = GetOrdersAsync(paginationParams, search).Result;
 
 		return Ok(orders);
 	}
