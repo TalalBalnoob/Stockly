@@ -20,7 +20,6 @@ public class StockController(AppDbContext _db) : Controller {
 			.Where(s => string.IsNullOrEmpty(search) ||
 				s.Reason.ToLower().Contains(search.ToLower()) ||
 				s.Change.ToString().Contains(search.ToLower()) ||
-				s.Related_Order.ToString().Contains(search.ToLower()) ||
 				s.Product.Name.ToLower().Contains(search.ToLower())
 			)
 			.OrderByDescending(p => p.CreatedAt)
