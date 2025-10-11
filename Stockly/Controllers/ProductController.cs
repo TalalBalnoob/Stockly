@@ -8,8 +8,10 @@ namespace Stockly.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ProductController(AppDbContext _db) : Controller {
-	public async Task<PagedResult<Product>> GetProductsAsync(PaginationParams paginationParams, string? search = null) {
+public class ProductController(AppDbContext _db) : Controller
+{
+	public async Task<PagedResult<Product>> GetProductsAsync(PaginationParams paginationParams, string? search = null)
+	{
 		var query = _db.Products.AsQueryable();
 
 		var totalCount = query.Count();
@@ -30,14 +32,16 @@ public class ProductController(AppDbContext _db) : Controller {
 	}
 
 	[HttpGet]
-	public ActionResult<Product[]> Index([FromQuery] PaginationParams paginationParams, [FromQuery] bool? nonDisabled, [FromQuery] string? search = null) {
+	public ActionResult<Product[]> Index([FromQuery] PaginationParams paginationParams, [FromQuery] bool? nonDisabled, [FromQuery] string? search = null)
+	{
 		var products = GetProductsAsync(paginationParams, search).Result;
 		products.Items = nonDisabled == true ? products.Items.Where(p => p.IsActive == true).ToArray() : products.Items;
 		return Ok(products);
 	}
 
 	[HttpGet("{id}")]
-	public ActionResult<Product> Show(int id) {
+	public ActionResult<Product> Show(int id)
+	{
 		var product = _db.Products.FirstOrDefault(u => id == u.Id);
 		if (product == null) return NotFound();
 
@@ -45,11 +49,13 @@ public class ProductController(AppDbContext _db) : Controller {
 	}
 
 	[HttpGet("{id}/stock")]
-	public ActionResult<StockDto[]> Get(int id) {
+	public ActionResult<StockDto[]> Get(int id)
+	{
 		Product? product = _db.Products.FirstOrDefault(u => u.Id == id);
 		if (product == null) return NotFound();
 
-		List<StockDto> stock = _db.StockAdjustment.Where(u => u.Product_Id == id).Select(s => new StockDto {
+		List<StockDto> stock = _db.StockAdjustment.Where(u => u.Product_Id == id).Select(s => new StockDto
+		{
 			Id = s.Id,
 			Change = s.Change,
 			Reason = s.Reason,
@@ -62,7 +68,8 @@ public class ProductController(AppDbContext _db) : Controller {
 	}
 
 	[HttpGet("{id}/stock/count")]
-	public ActionResult<int> GetCount(int id) {
+	public ActionResult<int> GetCount(int id)
+	{
 		Product? product = _db.Products.FirstOrDefault(u => u.Id == id);
 		if (product == null) return NotFound();
 
@@ -70,8 +77,10 @@ public class ProductController(AppDbContext _db) : Controller {
 	}
 
 	[HttpPost]
-	public ActionResult<Product> Create(CreateProductDto productDto) {
-		Product newProduct = new Product {
+	public ActionResult<Product> Create(CreateProductDto productDto)
+	{
+		Product newProduct = new Product
+		{
 			Name = productDto.Name,
 			Description = productDto.Description ?? "",
 			Price = productDto.Price,
@@ -85,7 +94,8 @@ public class ProductController(AppDbContext _db) : Controller {
 	}
 
 	[HttpPut("{id}")]
-	public ActionResult<Product> Update(int id, ProductDto productDto) {
+	public ActionResult<Product> Update(int id, ProductDto productDto)
+	{
 		Product? productFromDb = _db.Products.FirstOrDefault(u => id == u.Id);
 		if (productFromDb == null) return NotFound();
 
@@ -101,14 +111,16 @@ public class ProductController(AppDbContext _db) : Controller {
 	}
 
 	[HttpPost("'{id}/stock'")]
-	public IActionResult Set(int id, setStockDto dto) {
+	public IActionResult Set(int id, setStockDto dto)
+	{
 		Product? product = _db.Products.FirstOrDefault(u => u.Id == id);
 		if (product == null) return NotFound();
 
 		if (dto.Quantity < 0)
 			return BadRequest("Invalid stock adjustment can't get product quantity less than zero");
 
-		StockAdjustment adjustment = new StockAdjustment {
+		StockAdjustment adjustment = new StockAdjustment
+		{
 			Change = dto.Quantity - product.Quantity,
 			Reason = dto.Reason ?? "",
 			Product_Id = product.Id
@@ -123,7 +135,8 @@ public class ProductController(AppDbContext _db) : Controller {
 	}
 
 	[HttpDelete("{id}")]
-	public ActionResult Delete(int id) {
+	public ActionResult Delete(int id)
+	{
 		Product? product = _db.Products.FirstOrDefault(u => id == u.Id);
 		if (product == null) return NotFound();
 

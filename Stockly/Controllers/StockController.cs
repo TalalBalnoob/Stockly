@@ -10,16 +10,22 @@ namespace Stockly.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class StockController(AppDbContext _db) : Controller {
-	public async Task<PagedResult<StockDto>> GetStocksAsync(PaginationParams paginationParams) {
+	public async Task<PagedResult<StockDto>> GetStocksAsync(PaginationParams paginationParams, string? search = null) {
 		var query = _db.StockAdjustment.AsQueryable();
 
 		var totalCount = query.Count();
 
 		var items = query
+			.Include(s => s.Product)
+			.Where(s => string.IsNullOrEmpty(search) ||
+				s.Reason.ToLower().Contains(search.ToLower()) ||
+				s.Change.ToString().Contains(search.ToLower()) ||
+				s.Related_Order.ToString().Contains(search.ToLower()) ||
+				s.Product.Name.ToLower().Contains(search.ToLower())
+			)
 			.OrderByDescending(p => p.CreatedAt)
 			.Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
 			.Take(paginationParams.PageSize)
-			.Include(s => s.Product)
 			.Select(s =>
 			 new StockDto {
 				 Id = s.Id,
@@ -35,8 +41,8 @@ public class StockController(AppDbContext _db) : Controller {
 	}
 
 	[HttpGet]
-	public ActionResult<StockDto[]> Get([FromQuery] PaginationParams paginationParams) {
-		var stock = GetStocksAsync(paginationParams).Result;
+	public ActionResult<StockDto[]> Get([FromQuery] PaginationParams paginationParams, [FromQuery] string? search = null) {
+		var stock = GetStocksAsync(paginationParams, search).Result;
 
 		return Ok(stock);
 	}
