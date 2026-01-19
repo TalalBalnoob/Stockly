@@ -1,0 +1,46 @@
+## Build artifacts
+bin/
+obj/
+out/
+
+## VS Code
+.vscode/
+*.code-workspace
+
+## Rider
+.idea/
+
+## User-specific files
+*.user
+*.suo
+
+## Logs
+*.log
+
+## NuGet
+*.nupkg
+# Packages folder
+packages/
+# The following two lines are recommended if you store NuGet packages in git
+*.snupkg
+.nuget/
+
+## Entity Framework
+Migrations/
+
+## Docker artifacts
+docker-compose.override.yml
+docker-compose*.log
+
+## OS garbage
+.DS_Store
+Thumbs.db
+
+## Backup
+*.bak
+*.tmp
+
+#other 
+.TODO.md
+
+*.db
