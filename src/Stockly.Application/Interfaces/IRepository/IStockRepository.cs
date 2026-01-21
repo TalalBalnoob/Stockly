@@ -7,5 +7,5 @@ public interface IStockRepository {
 	Task<Stock?> GetByIdAsync(Guid id);
 	Task<Stock> AddAsync(Stock stock);
 	Task<Stock> UpdateAsync(Stock stock);
-	Task DeleteAsync(Guid id);
+	void DeleteAsync(Guid id);
 }

@@ -7,5 +7,5 @@ public interface IStockAdjustmentRepository {
 	Task<StockAdjustment?> GetByIdAsync(Guid id);
 	Task<StockAdjustment> AddAsync(StockAdjustment adjustment);
 	Task<StockAdjustment> UpdateAsync(StockAdjustment adjustment);
-	Task DeleteAsync(Guid id);
+	void DeleteAsync(Guid id);
 }

@@ -8,5 +8,5 @@ public interface IProductRepository {
 	Task<IEnumerable<Product>> GetByNameAsync(string name);
 	Task<Product> AddAsync(Product product);
 	Task<Product> UpdateAsync(Product product);
-	Task DeleteAsync(Guid id);
+	void DeleteAsync(Guid id);
 }
