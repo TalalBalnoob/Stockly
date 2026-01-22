@@ -6,7 +6,8 @@ using Stockly.Domain.Entity;
 
 namespace Stockly.Application.Services;
 
-public class ProductService(IProductRepository productRepo, IStockRepository stockRepo) : IProductService {
+public class ProductService(IProductRepository productRepo, IStockRepository stockRepo, IStockService stockService)
+	: IProductService {
 	public async Task<IEnumerable<Product>> GetAllProducts() {
 		return await productRepo.GetAllAsync();
 	}
@@ -56,11 +57,9 @@ public class ProductService(IProductRepository productRepo, IStockRepository sto
 		});
 
 		// create stock for the product
-		// replace with the add method from stock service later
-		var newStock = await stockRepo.AddAsync(new() {
+		var newStock = await stockService.AddNewStock(new NewStockDto() {
 			ProductId = newProduct.Id,
-			Quantity = productDto.InialQuantity,
-			StorageNote = "",
+			InialQuantity = productDto.InialQuantity
 		});
 
 		// return both the product and the stock 
@@ -86,6 +85,7 @@ public class ProductService(IProductRepository productRepo, IStockRepository sto
 		var product = await productRepo.GetByIdAsync(id);
 		if (product == null) throw new Exception("Product not found");
 
+		stockService.DeleteStock(product.StockId);
 		productRepo.DeleteAsync(id);
 	}
 }
