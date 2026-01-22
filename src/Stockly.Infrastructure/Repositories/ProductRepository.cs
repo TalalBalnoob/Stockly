@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Stockly.Application.Interfaces.IRepository;
 using Stockly.Domain.Entity;
 
@@ -12,8 +13,8 @@ public class ProductRepository(AppDbContext db) : IProductRepository {
 		return await db.Products.FindAsync(id);
 	}
 
-	public async Task<IEnumerable<Product>> GetByNameAsync(string name) {
-		return db.Products.Where(p => p.Name == name).ToList();
+	public async Task<Product> GetByNameAsync(string name) {
+		return db.Products.First(p => p.Name == name);
 	}
 
 	public async Task<Product> AddAsync(Product product) {

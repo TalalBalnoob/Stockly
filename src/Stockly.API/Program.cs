@@ -1,5 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using Stockly.Application.Interfaces.IRepository;
+using Stockly.Application.Interfaces.Services;
+using Stockly.Application.Services;
 using Stockly.Infrastructure;
+using Stockly.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +14,13 @@ builder.Services.AddOpenApi();
 // db config 
 builder.Services.AddDbContext<AppDbContext>(options => { options.UseSqlite("Data Source=stockly.db"); });
 
+builder.Services.AddSingleton<IProductRepository, ProductRepository>();
+builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
+builder.Services.AddSingleton<IOrderItemRepository, OrderItemRepository>();
+builder.Services.AddSingleton<IStockRepository, StockRepository>();
+builder.Services.AddSingleton<IStockAdjustmentRepository, StockAdjustmentRepository>();
+
+builder.Services.AddSingleton<IProductService, ProductService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
