@@ -34,9 +34,6 @@ public class FakeStockService : IStockService {
 		throw new NotImplementedException();
 	}
 
-	Task IStockService.DeleteStock(Guid id) {
-		throw new NotImplementedException();
-	}
 
 	public Task DeleteStock(Guid productId) {
 		Stocks.RemoveAll(s => s.ProductId == productId);

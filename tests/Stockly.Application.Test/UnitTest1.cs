@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using Stockly.Application.DTOs;
 using Stockly.Application.Services;
 using Stockly.Application.Test.Services.FakeServices;
 using Stockly.Domain.Entity;
@@ -29,16 +30,18 @@ public class ProductServiceTests {
 
 	[Test]
 	public async Task GetAllProducts_ReturnsAllProducts() {
-		await _productRepo.AddAsync(new Product {
-			Id = Guid.NewGuid(),
+		await _service.AddProduct(new NewProductDto {
 			Name = "Laptop",
-			Price = 1000
+			Price = 1000,
+			Description = "",
+			IsActive = true,
+			InialQuantity = 10
 		});
 
 		var result = await _service.GetAllProducts();
 
 		Assert.That(result.First().Name, Is.EqualTo("Laptop"));
-		_productRepo.DeleteAsync(result.First().Id);
+		await _service.DeleteProduct(result.First().Id);
 		result = await _service.GetAllProducts();
 		Assert.That(result.Count(), Is.EqualTo(0));
 	}

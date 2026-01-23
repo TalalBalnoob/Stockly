@@ -49,7 +49,7 @@ public class ProductService(IProductRepository productRepo, IStockRepository sto
 	public async Task<NewCreatedProductDto> AddProduct(NewProductDto productDto) {
 		// create the product 
 		var newProduct = await productRepo.AddAsync(new() {
-			Id = Guid.NewGuid(),
+			Id = new Guid(),
 			Name = productDto.Name,
 			Price = productDto.Price,
 			IsActive = productDto.IsActive ?? true,
