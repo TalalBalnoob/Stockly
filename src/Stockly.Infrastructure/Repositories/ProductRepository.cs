@@ -29,7 +29,7 @@ public class ProductRepository(AppDbContext db) : IProductRepository {
 		return product;
 	}
 
-	public async void DeleteAsync(Guid id) {
+	public async Task DeleteAsync(Guid id) {
 		var product = await GetByIdAsync(id);
 		db.Products.Remove(product);
 		await db.SaveChangesAsync();

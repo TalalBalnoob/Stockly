@@ -85,7 +85,7 @@ public class ProductService(IProductRepository productRepo, IStockRepository sto
 		var product = await productRepo.GetByIdAsync(id);
 		if (product == null) throw new Exception("Product not found");
 
-		stockService.DeleteStock(product.StockId);
-		productRepo.DeleteAsync(id);
+		await stockService.DeleteStock(product.StockId);
+		await productRepo.DeleteAsync(id);
 	}
 }

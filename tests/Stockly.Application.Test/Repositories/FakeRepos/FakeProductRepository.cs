@@ -35,7 +35,7 @@ public class FakeProductRepository : IProductRepository {
 		return product;
 	}
 
-	public async void DeleteAsync(Guid id) {
+	public async Task DeleteAsync(Guid id) {
 		var product = await GetByIdAsync(id);
 		if (product == null) return;
 		db.Remove(product);

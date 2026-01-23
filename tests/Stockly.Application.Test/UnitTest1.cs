@@ -1,15 +1,45 @@
-﻿namespace Stockly.Application.Test;
+﻿using NUnit.Framework;
+using Stockly.Application.Services;
+using Stockly.Application.Test.Services.FakeServices;
+using Stockly.Domain.Entity;
+using Stockly.Infrastructure.Repositories;
+using Stockly.Infrastructure.Test;
 
-public class Tests
-{
-    [SetUp]
-    public void Setup()
-    {
-    }
+namespace Stockly.Application.Test;
 
-    [Test]
-    public void Test1()
-    {
-        Assert.Pass();
-    }
+public class ProductServiceTests {
+	private ProductService _service = null!;
+
+	private FakeProductRepository _productRepo = null!;
+	private FakeStockRepository _stockRepo = null!;
+	private FakeStockService _stockService = null!;
+
+	[SetUp]
+	public void Setup() {
+		_productRepo = new FakeProductRepository();
+		_stockRepo = new FakeStockRepository();
+		_stockService = new FakeStockService();
+
+		_service = new ProductService(
+			_productRepo,
+			_stockRepo,
+			_stockService
+		);
+	}
+
+	[Test]
+	public async Task GetAllProducts_ReturnsAllProducts() {
+		await _productRepo.AddAsync(new Product {
+			Id = Guid.NewGuid(),
+			Name = "Laptop",
+			Price = 1000
+		});
+
+		var result = await _service.GetAllProducts();
+
+		Assert.That(result.First().Name, Is.EqualTo("Laptop"));
+		_productRepo.DeleteAsync(result.First().Id);
+		result = await _service.GetAllProducts();
+		Assert.That(result.Count(), Is.EqualTo(0));
+	}
 }
