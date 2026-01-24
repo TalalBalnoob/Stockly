@@ -24,7 +24,7 @@ public class StockRepository(AppDbContext db) : IStockRepository {
 		return stock;
 	}
 
-	public async void DeleteAsync(Guid id) {
+	public async Task DeleteAsync(Guid id) {
 		var stock = await GetByIdAsync(id);
 		db.Stocks.Remove(stock);
 		await db.SaveChangesAsync();
