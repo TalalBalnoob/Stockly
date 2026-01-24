@@ -1,4 +1,5 @@
 using Stockly.Application.DTOs;
+using Stockly.Application.Interfaces.Services;
 using Stockly.Application.Services;
 using Stockly.Domain.Entity;
 

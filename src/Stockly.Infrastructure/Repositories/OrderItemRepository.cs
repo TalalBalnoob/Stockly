@@ -34,7 +34,7 @@ public class OrderItemRepository(AppDbContext db) : IOrderItemRepository {
 		return orderItem;
 	}
 
-	public async void DeleteAsync(Guid id) {
+	public async Task DeleteAsync(Guid id) {
 		var orderItem = await GetByIdAsync(id);
 		db.OrderItems.Remove(orderItem);
 		await db.SaveChangesAsync();

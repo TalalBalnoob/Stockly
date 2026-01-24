@@ -9,5 +9,5 @@ public interface IOrderItemRepository {
 	Task<OrderItem> AddAsync(OrderItem orderItem);
 	Task<OrderItem[]> AddRangeAsync(OrderItem[] orderItems);
 	Task<OrderItem> UpdateAsync(OrderItem orderItem);
-	void DeleteAsync(Guid id);
+	Task DeleteAsync(Guid id);
 }

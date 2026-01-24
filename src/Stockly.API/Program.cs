@@ -4,6 +4,7 @@ using Stockly.Application.Interfaces.Services;
 using Stockly.Application.Services;
 using Stockly.Infrastructure;
 using Stockly.Infrastructure.Repositories;
+using IStockService = Stockly.Application.Interfaces.Services.IStockService;
 
 var builder = WebApplication.CreateBuilder(args);
 

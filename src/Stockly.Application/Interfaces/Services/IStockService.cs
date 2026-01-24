@@ -9,5 +9,5 @@ public interface IStockService {
 	Task<Stock?> GetStockByProductId(Guid productId);
 	Task<Stock> AddNewStock(NewStockDto stock);
 	Task<Stock> UpdateStock(UpdateStockDto stockDto);
-	void DeleteStock(Guid id);
+	Task DeleteStock(Guid id);
 }

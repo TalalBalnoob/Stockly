@@ -14,6 +14,10 @@ public class FakeOrderItemRepository : IOrderItemRepository {
 		return db.ToList();
 	}
 
+	public async Task<IEnumerable<OrderItem>> GetAllByOrderIdAsync(Guid orderId) {
+		throw new NotImplementedException();
+	}
+
 	public async Task<OrderItem?> GetByIdAsync(Guid id) {
 		return db.Find(o => o.Id == id);
 	}
@@ -35,7 +39,7 @@ public class FakeOrderItemRepository : IOrderItemRepository {
 		return orderItem;
 	}
 
-	public async void DeleteAsync(Guid id) {
+	public async Task DeleteAsync(Guid id) {
 		var orderItem = await GetByIdAsync(id);
 		db.Remove(orderItem);
 	}
