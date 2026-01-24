@@ -46,7 +46,7 @@ public class ProductService(IProductRepository productRepo, IStockRepository sto
 		return products;
 	}
 
-	public async Task<NewCreatedProductDto> AddProduct(NewProductDto productDto) {
+	public async Task<Product> AddProduct(NewProductDto productDto) {
 		// create the product 
 		var newProduct = await productRepo.AddAsync(new() {
 			Id = new Guid(),
@@ -56,17 +56,7 @@ public class ProductService(IProductRepository productRepo, IStockRepository sto
 			Description = productDto.Description ?? string.Empty,
 		});
 
-		// create stock for the product
-		var newStock = await stockService.AddNewStock(new NewStockDto() {
-			ProductId = newProduct.Id,
-			InialQuantity = productDto.InialQuantity
-		});
-
-		// return both the product and the stock 
-		return new NewCreatedProductDto() {
-			Product = newProduct,
-			Stock = newStock
-		};
+		return newProduct;
 	}
 
 	public async Task<Product> UpdateProduct(Product product) {
@@ -85,7 +75,6 @@ public class ProductService(IProductRepository productRepo, IStockRepository sto
 		var product = await productRepo.GetByIdAsync(id);
 		if (product == null) throw new Exception("Product not found");
 
-		await stockService.DeleteStock(product.StockId);
 		await productRepo.DeleteAsync(id);
 	}
 }
