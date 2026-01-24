@@ -8,6 +8,10 @@ public class OrderItemRepository(AppDbContext db) : IOrderItemRepository {
 		return db.OrderItems.ToList();
 	}
 
+	public async Task<IEnumerable<OrderItem>> GetAllByOrderIdAsync(Guid orderId) {
+		return db.OrderItems.Where(o => o.OrderId == orderId).ToList();
+	}
+
 	public async Task<OrderItem?> GetByIdAsync(Guid id) {
 		return await db.OrderItems.FindAsync(id);
 	}

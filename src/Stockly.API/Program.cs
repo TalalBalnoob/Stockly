@@ -21,6 +21,8 @@ builder.Services.AddSingleton<IStockRepository, StockRepository>();
 builder.Services.AddSingleton<IStockAdjustmentRepository, StockAdjustmentRepository>();
 
 builder.Services.AddSingleton<IProductService, ProductService>();
+builder.Services.AddSingleton<IStockService, StockService>();
+builder.Services.AddSingleton<IOrderItemsService, OrderItemsService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
