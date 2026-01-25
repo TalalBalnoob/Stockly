@@ -7,7 +7,6 @@ namespace Stockly.Application.Services;
 
 public class OrderItemsService(
 	IOrderItemRepository orderItemRepo,
-	IOrderRepository orderRepo,
 	IProductRepository productRepo) : IOrderItemsService {
 	public async Task<OrderItem> GetOrderItem(Guid id) {
 		var item = await orderItemRepo.GetByIdAsync(id);

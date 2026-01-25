@@ -5,7 +5,7 @@ using Stockly.Domain.Entity;
 
 namespace Stockly.Application.Services;
 
-public class StockService(IStockRepository stockRepo, IProductRepository productRepo, IProductService productService)
+public class StockService(IStockRepository stockRepo, IProductRepository productRepo)
 	: IStockService {
 	public async Task<IEnumerable<Stock>> GetAllStocks() {
 		return await stockRepo.GetAllAsync();
@@ -19,7 +19,7 @@ public class StockService(IStockRepository stockRepo, IProductRepository product
 	}
 
 	public async Task<Stock?> GetStockByProductId(Guid productId) {
-		var product = await productService.GetProductById(productId);
+		var product = await productRepo.GetByIdAsync(productId);
 
 		var stock = await stockRepo.GetByIdAsync(product.StockId);
 		return stock;
