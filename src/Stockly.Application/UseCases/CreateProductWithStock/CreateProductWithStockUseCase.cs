@@ -6,7 +6,7 @@ namespace Stockly.Application.UseCases.CreateProductWithStock;
 public class CreateProductWithStockUseCase(IProductRepository productRepo, IStockRepository stockRepo) {
 	public async Task<NewCreatedProductDto> Execute(NewProductDto productDto) {
 		var newProduct = await productRepo.AddAsync(new() {
-			Id = new Guid(),
+			Id = Guid.NewGuid(),
 			Name = productDto.Name,
 			Price = productDto.Price,
 			IsActive = productDto.IsActive ?? true,

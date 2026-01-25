@@ -22,7 +22,7 @@ public class OrderItemsService(
 	public async Task<OrderItem> CreateOrderItem(NewOrderItemDto orderItemDto) {
 		decimal ItemPrice = orderItemDto.Price ?? productRepo.GetByIdAsync(orderItemDto.ProductId).Result.Price;
 		var newItem = await orderItemRepo.AddAsync(new OrderItem {
-			Id = new Guid(),
+			Id = Guid.NewGuid(),
 			ProductId = orderItemDto.ProductId,
 			Quantity = orderItemDto.Quantity,
 			OrderId = orderItemDto.OrderId,
