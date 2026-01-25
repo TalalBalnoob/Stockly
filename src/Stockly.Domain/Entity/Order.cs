@@ -16,5 +16,5 @@ public class Order {
 
 	public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-	public OrderItem[] OrderItems { get; set; } = Array.Empty<OrderItem>();
+	public ICollection<OrderItem> OrderItems { get; set; } = Array.Empty<OrderItem>();
 }
