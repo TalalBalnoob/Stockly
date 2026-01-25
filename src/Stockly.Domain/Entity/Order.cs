@@ -17,4 +17,24 @@ public class Order {
 	public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
 	public ICollection<OrderItem> OrderItems { get; set; } = Array.Empty<OrderItem>();
+
+	public void ChangeStatus(OrderStatus newStatus) {
+		if (!IsValidTransition(Status, newStatus))
+			throw new InvalidOperationException(
+				$"Cannot change status from {Status} to {newStatus}");
+
+		Status = newStatus;
+	}
+
+	private static bool IsValidTransition(
+		OrderStatus current,
+		OrderStatus next) {
+		return (current, next) switch {
+			(OrderStatus.Processing, OrderStatus.Shipped) => true,
+			(OrderStatus.Processing, OrderStatus.Cancelled) => true,
+			(OrderStatus.Shipped, OrderStatus.Delivered) => true,
+			(OrderStatus.Delivered, OrderStatus.Returned) => true,
+			_ => false
+		};
+	}
 }
