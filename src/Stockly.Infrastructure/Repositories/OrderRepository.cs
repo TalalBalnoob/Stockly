@@ -8,8 +8,19 @@ public class OrderRepository(AppDbContext db) : IOrderRepository {
 		return db.Orders.ToList();
 	}
 
+	public async Task<IEnumerable<Order>> GetAllWithItemsAsync() {
+		return await db.Orders.Include(o => o.OrderItems).ToListAsync();
+	}
+
 	public async Task<Order?> GetByIdAsync(Guid id) {
 		return await db.Orders.FindAsync(id);
+	}
+
+
+	public async Task<Order?> GetByIdWithItemsAsync(Guid id) {
+		return await db.Orders
+			.Include(o => o.OrderItems)
+			.FirstOrDefaultAsync(o => o.Id == id);
 	}
 
 	public async Task<Order> AddAsync(Order order) {

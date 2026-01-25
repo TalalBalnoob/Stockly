@@ -14,8 +14,16 @@ public class FakeOrderRepository : IOrderRepository {
 		return db.ToList();
 	}
 
+	public async Task<IEnumerable<Order>> GetAllWithItemsAsync() {
+		throw new NotImplementedException();
+	}
+
 	public async Task<Order?> GetByIdAsync(Guid id) {
 		return db.Find(o => o.Id == id);
+	}
+
+	public async Task<Order?> GetByIdWithItemsAsync(Guid id) {
+		throw new NotImplementedException();
 	}
 
 	public async Task<Order> AddAsync(Order order) {
