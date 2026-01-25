@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
 using Stockly.Application.DTOs;
 using Stockly.Application.Services;
-using Stockly.Application.Test.Services.FakeServices;
 using Stockly.Domain.Entity;
 using Stockly.Infrastructure.Repositories;
 using Stockly.Infrastructure.Test;
@@ -13,18 +12,15 @@ public class ProductServiceTests {
 
 	private FakeProductRepository _productRepo = null!;
 	private FakeStockRepository _stockRepo = null!;
-	private FakeStockService _stockService = null!;
 
 	[SetUp]
 	public void Setup() {
 		_productRepo = new FakeProductRepository();
 		_stockRepo = new FakeStockRepository();
-		_stockService = new FakeStockService();
 
 		_service = new ProductService(
 			_productRepo,
-			_stockRepo,
-			_stockService
+			_stockRepo
 		);
 	}
 
