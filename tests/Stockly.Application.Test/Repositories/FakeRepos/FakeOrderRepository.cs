@@ -37,7 +37,7 @@ public class FakeOrderRepository : IOrderRepository {
 		return order;
 	}
 
-	public async void DeleteAsync(Guid id) {
+	public async Task DeleteAsync(Guid id) {
 		var order = await GetByIdAsync(id);
 		db.Remove(order);
 	}
