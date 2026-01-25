@@ -15,8 +15,16 @@ public class FakeProductRepository : IProductRepository {
 		return db.ToList();
 	}
 
+	public async Task<IEnumerable<Product>> GetAllWithStockAsync() {
+		throw new NotImplementedException();
+	}
+
 	public async Task<Product?> GetByIdAsync(Guid id) {
 		return db.Find(p => id == p.Id);
+	}
+
+	public async Task<Product?> GetByIdWithStockAsync(Guid id) {
+		throw new NotImplementedException();
 	}
 
 	public async Task<Product> GetByNameAsync(string name) {

@@ -9,8 +9,16 @@ public class ProductRepository(AppDbContext db) : IProductRepository {
 		return db.Products.ToList();
 	}
 
+	public async Task<IEnumerable<Product>> GetAllWithStockAsync() {
+		return db.Products.Include(p => p.Stock).ToList();
+	}
+
 	public async Task<Product?> GetByIdAsync(Guid id) {
 		return await db.Products.FindAsync(id);
+	}
+
+	public async Task<Product?> GetByIdWithStockAsync(Guid id) {
+		return db.Products.Include(p => p.Stock).FirstOrDefault(p => p.Id == id);
 	}
 
 	public async Task<Product> GetByNameAsync(string name) {
