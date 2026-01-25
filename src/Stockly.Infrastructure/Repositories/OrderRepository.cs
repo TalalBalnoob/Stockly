@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Stockly.Application.Interfaces.IRepository;
 using Stockly.Domain.Entity;
 
@@ -5,7 +6,7 @@ namespace Stockly.Infrastructure.Repositories;
 
 public class OrderRepository(AppDbContext db) : IOrderRepository {
 	public async Task<IEnumerable<Order>> GetAllAsync() {
-		return db.Orders.ToList();
+		return await db.Orders.ToListAsync();
 	}
 
 	public async Task<IEnumerable<Order>> GetAllWithItemsAsync() {

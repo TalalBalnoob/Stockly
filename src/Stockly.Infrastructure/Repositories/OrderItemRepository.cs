@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Stockly.Application.Interfaces.IRepository;
 using Stockly.Domain.Entity;
 
@@ -5,11 +6,11 @@ namespace Stockly.Infrastructure.Repositories;
 
 public class OrderItemRepository(AppDbContext db) : IOrderItemRepository {
 	public async Task<IEnumerable<OrderItem>> GetAllAsync() {
-		return db.OrderItems.ToList();
+		return await db.OrderItems.ToListAsync();
 	}
 
 	public async Task<IEnumerable<OrderItem>> GetAllByOrderIdAsync(Guid orderId) {
-		return db.OrderItems.Where(o => o.OrderId == orderId).ToList();
+		return await db.OrderItems.Where(o => o.OrderId == orderId).ToListAsync();
 	}
 
 	public async Task<OrderItem?> GetByIdAsync(Guid id) {
