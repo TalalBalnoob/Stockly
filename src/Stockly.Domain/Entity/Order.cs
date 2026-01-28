@@ -18,6 +18,11 @@ public class Order {
 
 	public ICollection<OrderItem> OrderItems { get; set; } = Array.Empty<OrderItem>();
 
+
+	public void ChangePaymentStatus(PaymentStatus newStatus) {
+		PaymentStatus = newStatus;
+	}
+
 	public void ChangeStatus(OrderStatus newStatus) {
 		if (!IsValidTransition(Status, newStatus))
 			throw new InvalidOperationException(

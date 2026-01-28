@@ -16,14 +16,21 @@ public class OrderService(IOrderRepository orderRepo, IOrderItemRepository order
 		return orders.ToList();
 	}
 
-	// what should be updated here?
-
-	public async Task SetOrderStatus(Guid orderId, OrderStatus newStatus) {
+	public async Task<Order> SetOrderStatus(Guid orderId, OrderStatus newStatus) {
 		var order = await orderRepo.GetByIdAsync(orderId)
 		            ?? throw new Exception("Order not found");
 
 		order.ChangeStatus(newStatus);
 
-		await orderRepo.UpdateAsync(order);
+		return await orderRepo.UpdateAsync(order);
+	}
+
+	public async Task<Order> SetPaymentStatus(Guid orderId, PaymentStatus newStatus) {
+		var order = await orderRepo.GetByIdAsync(orderId)
+		            ?? throw new Exception("Order not found");
+
+		order.ChangePaymentStatus(newStatus);
+
+		return await orderRepo.UpdateAsync(order);
 	}
 }
