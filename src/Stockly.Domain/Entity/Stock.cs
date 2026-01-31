@@ -10,6 +10,4 @@ public class Stock {
 	public string? StorageNote { get; set; }
 
 	public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-	[ForeignKey(nameof(ProductId))] public Product Product { get; set; }
 }
