@@ -12,5 +12,5 @@ public class NewOrderDto {
 	public PaymentStatus PaymentStatus { get; set; } = PaymentStatus.Unpaid;
 	public string? PaymentDetails { get; set; }
 
-	public NewOrderItemDto[] OrderItems { get; set; } = Array.Empty<NewOrderItemDto>();
+	public List<NewOrderItemDto> OrderItems { get; set; } = new List<NewOrderItemDto>();
 }

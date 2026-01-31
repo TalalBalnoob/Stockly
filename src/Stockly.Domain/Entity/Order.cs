@@ -16,7 +16,7 @@ public class Order {
 
 	public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-	public ICollection<OrderItem> OrderItems { get; set; } = Array.Empty<OrderItem>();
+	public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
 
 	public void ChangePaymentStatus(PaymentStatus newStatus) {

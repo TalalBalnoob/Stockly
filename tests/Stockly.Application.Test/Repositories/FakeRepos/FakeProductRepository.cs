@@ -24,7 +24,7 @@ public class FakeProductRepository : IProductRepository {
 	}
 
 	public async Task<Product?> GetByIdWithStockAsync(Guid id) {
-		throw new NotImplementedException();
+		return db.Find(p => p.Id == id);
 	}
 
 	public async Task<Product> GetByNameAsync(string name) {

@@ -6,7 +6,9 @@ namespace Stockly.Application.UseCases.CreateNewOrder;
 
 public class CreateNewOrderUseCase(
 	IOrderRepository orderRepo,
-	IProductRepository productRepo) {
+	IProductRepository productRepo,
+	IStockAdjustmentRepository adjustmentRepo,
+	IStockRepository stockRepo) {
 	public async Task<Order> Execute(NewOrderDto orderDto) {
 		var newOrder = new Order {
 			Id = Guid.NewGuid(),
@@ -38,6 +40,17 @@ public class CreateNewOrderUseCase(
 			newOrder.OrderItems.Add(newItem);
 
 			newOrder.TotalPrice += newItem.Price * newItem.Quantity;
+
+			var stockUpdate = product.Stock;
+			stockUpdate.Quantity = product.Stock.Quantity - orderItem.Quantity;
+			await stockRepo.UpdateAsync(stockUpdate);
+
+			await adjustmentRepo.AddAsync(new StockAdjustment {
+				ProductId = orderItem.ProductId,
+				OrderId = newOrder.Id,
+				Quantity = -orderItem.Quantity,
+				Reason = "Order created"
+			});
 		}
 
 		return await orderRepo.AddAsync(newOrder);
