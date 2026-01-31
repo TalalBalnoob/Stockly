@@ -1,9 +1,11 @@
 using Stockly.Application.Interfaces.IRepository;
+using Stockly.Application.Interfaces.UseCases;
 using Stockly.Domain.Entity;
 
 namespace Stockly.Application.UseCases.UpdateOrder;
 
-public class UpdateOrderDtoUseCase(IOrderRepository orderRepo, IOrderItemRepository orderItemRepo) {
+public class UpdateOrderDtoUseCase(IOrderRepository orderRepo, IOrderItemRepository orderItemRepo)
+	: IUpdateOrderDtoUseCase {
 	public async Task<Order> Execute(UpdateOrderDto orderDto) {
 		var orderFromDb = await orderRepo.GetByIdWithItemsAsync(orderDto.Id);
 
