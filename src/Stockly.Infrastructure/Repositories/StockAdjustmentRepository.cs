@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Stockly.Application.Interfaces.IRepository;
 using Stockly.Domain.Entity;
 
@@ -10,6 +11,10 @@ public class StockAdjustmentRepository(AppDbContext db) : IStockAdjustmentReposi
 
 	public async Task<StockAdjustment?> GetByIdAsync(Guid id) {
 		return await db.StockAdjustments.FindAsync(id);
+	}
+
+	public async Task<List<StockAdjustment>> GetByProductIdAsync(Guid productId) {
+		return await db.StockAdjustments.Where(s => s.ProductId == productId).ToListAsync();
 	}
 
 	public async Task<StockAdjustment> AddAsync(StockAdjustment adjustment) {
