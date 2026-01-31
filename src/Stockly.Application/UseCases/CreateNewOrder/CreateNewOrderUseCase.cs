@@ -8,7 +8,7 @@ public class CreateNewOrderUseCase(
 	IOrderRepository orderRepo,
 	IProductRepository productRepo,
 	IStockAdjustmentRepository adjustmentRepo,
-	IStockRepository stockRepo) {
+	IStockRepository stockRepo) : ICreateNewOrderUseCase {
 	public async Task<Order> Execute(NewOrderDto orderDto) {
 		var newOrder = new Order {
 			Id = Guid.NewGuid(),
