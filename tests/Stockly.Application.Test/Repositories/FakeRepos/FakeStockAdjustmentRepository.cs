@@ -18,6 +18,10 @@ public class FakeStockAdjustmentRepository : IStockAdjustmentRepository {
 		return db.Find(s => id == s.Id);
 	}
 
+	public async Task<List<StockAdjustment>> GetByProductIdAsync(Guid productId) {
+		return db.Where(s => s.ProductId == productId).ToList();
+	}
+
 	public async Task<StockAdjustment> AddAsync(StockAdjustment adjustment) {
 		db.Add(adjustment);
 		return adjustment;
