@@ -25,6 +25,10 @@ public class ProductRepository(AppDbContext db) : IProductRepository {
 		return db.Products.First(p => p.Name == name);
 	}
 
+	public async Task<Product> GetByNameWithStockAsync(string name) {
+		return db.Products.Include(p => p.Stock).First(p => p.Name == name);
+	}
+
 	public async Task<Product> AddAsync(Product product) {
 		db.Products.Add(product);
 		await db.SaveChangesAsync();

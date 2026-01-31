@@ -12,6 +12,10 @@ public class ProductService(IProductRepository productRepo, IStockRepository sto
 		return await productRepo.GetAllAsync();
 	}
 
+	public async Task<IEnumerable<Product>> GetAllProductsWithStocks() {
+		return await productRepo.GetAllWithStockAsync();
+	}
+
 	public async Task<Product?> GetProductById(Guid id) {
 		var product = await productRepo.GetByIdAsync(id);
 		if (product == null) throw new Exception("Product not found");
@@ -19,7 +23,29 @@ public class ProductService(IProductRepository productRepo, IStockRepository sto
 		return product;
 	}
 
+	public async Task<Product?> GetProductWithStocksById(Guid id) {
+		var product = await productRepo.GetByIdWithStockAsync(id);
+		if (product == null) throw new Exception("Product not found");
+
+		return product;
+	}
+
 	public async Task<Product?> GetProductByName(string name) {
+		var product = await productRepo.GetByNameAsync(name);
+		if (product == null) throw new Exception("Product not found");
+
+		return product;
+	}
+
+	public async Task<Product?> GetProductWithStocksByName(string name) {
+		var product = await productRepo.GetByNameWithStockAsync(name);
+		if (product == null) throw new Exception("Product not found");
+
+		return product;
+		;
+	}
+
+	public async Task<Product?> GetProductWithStockByName(string name) {
 		var product = await productRepo.GetByNameAsync(name);
 		if (product == null) throw new Exception("Product not found");
 

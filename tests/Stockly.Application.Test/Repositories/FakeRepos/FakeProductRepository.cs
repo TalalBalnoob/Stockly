@@ -31,6 +31,10 @@ public class FakeProductRepository : IProductRepository {
 		return db.First(p => p.Name == name);
 	}
 
+	public async Task<Product> GetByNameWithStockAsync(string name) {
+		throw new NotImplementedException();
+	}
+
 	public async Task<Product> AddAsync(Product product) {
 		db.Add(product);
 

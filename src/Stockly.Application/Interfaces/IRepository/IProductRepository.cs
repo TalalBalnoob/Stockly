@@ -8,6 +8,7 @@ public interface IProductRepository {
 	Task<Product?> GetByIdAsync(Guid id);
 	Task<Product?> GetByIdWithStockAsync(Guid id);
 	Task<Product> GetByNameAsync(string name);
+	Task<Product> GetByNameWithStockAsync(string name);
 	Task<Product> AddAsync(Product product);
 	Task<Product> UpdateAsync(Product product);
 	Task DeleteAsync(Guid id);
