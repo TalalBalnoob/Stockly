@@ -7,65 +7,70 @@ using Stockly.Infrastructure.Test;
 
 namespace Stockly.Application.Test;
 
-public class ProductServiceTests {
-	private ProductService _service = null!;
+public class ProductServiceTests
+{
+    private ProductService _service = null!;
 
-	private FakeProductRepository _productRepo = null!;
-	private FakeStockRepository _stockRepo = null!;
+    private FakeProductRepository _productRepo = null!;
+    private FakeStockRepository _stockRepo = null!;
 
-	[SetUp]
-	public void Setup() {
-		_productRepo = new FakeProductRepository();
-		_stockRepo = new FakeStockRepository();
+    [SetUp]
+    public void Setup()
+    {
+        _productRepo = new FakeProductRepository();
+        _stockRepo = new FakeStockRepository();
 
-		_service = new ProductService(
-			_productRepo,
-			_stockRepo
-		);
-	}
+        _service = new ProductService(_productRepo, _stockRepo);
+    }
 
-	[Test]
-	public async Task GetAllProducts_ReturnsAllProducts() {
-		// add a product
-		await _service.AddProduct(new NewProductDto {
-			Name = "Laptop",
-			Price = 1000,
-			Description = "",
-			IsActive = true,
-			InialQuantity = 10
-		});
+    [Test]
+    public async Task GetAllProducts_ReturnsAllProducts()
+    {
+        // add a product
+        await _service.AddProduct(
+            new NewProductDto
+            {
+                Name = "Laptop",
+                Price = 1000,
+                Description = "",
+                IsActive = true,
+                InialQuantity = 10,
+            }
+        );
 
-		var result = await _service.GetAllProducts();
-		Assert.That(result.First().Name, Is.EqualTo("Laptop"));
+        var result = await _service.GetAllProducts();
+        Assert.That(result.First().Name, Is.EqualTo("Laptop"));
 
-		// delete the product
-		await _service.DeleteProduct(result.First().Id);
+        // delete the product
+        await _service.DeleteProduct(result.First().Id);
 
-		result = await _service.GetAllProducts();
-		Assert.That(result.Count(), Is.EqualTo(0));
-	}
+        result = await _service.GetAllProducts();
+        Assert.That(result.Count(), Is.EqualTo(0));
+    }
 
-	[Test]
-	public async Task AddAndUpdateProduct_ReturnsAllProducts() {
-		// add a product
-		await _service.AddProduct(new NewProductDto {
-			Name = "Laptop",
-			Price = 1000,
-			Description = "",
-			IsActive = true,
-			InialQuantity = 10
-		});
+    [Test]
+    public async Task AddAndUpdateProduct_ReturnsAllProducts()
+    {
+        // add a product
+        await _service.AddProduct(
+            new NewProductDto
+            {
+                Name = "Laptop",
+                Price = 1000,
+                Description = "",
+                IsActive = true,
+                InialQuantity = 10,
+            }
+        );
 
-		var result = await _service.GetAllProducts();
-		Assert.That(result.First().Price, Is.EqualTo(1000));
+        var result = await _service.GetAllProducts();
+        Assert.That(result.First().Price, Is.EqualTo(1000));
 
-		// update the product
-		await _service.UpdateProduct(new Product() {
-			Id = result.First().Id,
-			Price = 950,
-		});
+        // update the product
+        await _service.UpdateProduct(new Product() { Id = result.First().Id, Price = 950 });
 
-		result = await _service.GetAllProducts();
-		Assert.That(result.First().Price, Is.EqualTo(950));
-	}
+        result = await _service.GetAllProducts();
+        Assert.That(result.First().Price, Is.EqualTo(950));
+    }
 }
+
