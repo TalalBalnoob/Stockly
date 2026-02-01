@@ -11,7 +11,7 @@ namespace Stockly.Application.Test;
 
 public class OrderTest {
 	private CreateNewOrderUseCase _createOrderUseCase = null!;
-	private UpdateOrderDtoUseCase _updateOrderUseCase = null!;
+	private UpdateOrderUseCase _updateOrderUseCase = null!;
 	private FakeOrderRepository _orderRepo = null!;
 	private FakeOrderItemRepository _orderItemRepo = null!;
 	private FakeProductRepository _productRepo = null!;
@@ -28,7 +28,7 @@ public class OrderTest {
 
 		_createOrderUseCase =
 			new CreateNewOrderUseCase(_orderRepo, _productRepo, _stockAdjustmentRepository, _stockRepository);
-		_updateOrderUseCase = new UpdateOrderDtoUseCase(_orderRepo, _orderItemRepo);
+		_updateOrderUseCase = new UpdateOrderUseCase(_orderRepo, _orderItemRepo);
 	}
 
 	[Test]

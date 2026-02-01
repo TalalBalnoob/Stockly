@@ -42,7 +42,7 @@ builder.Services.AddScoped<ICreateNewOrderUseCase, CreateNewOrderUseCase>();
 builder.Services.AddScoped<ICreateProductWithStockUseCase, CreateProductWithStockUseCase>();
 builder.Services.AddScoped<IDeleteOrderUseCase, DeleteOrderUseCase>();
 builder.Services.AddScoped<IDeleteProductAndStock, DeleteProductAndStock>();
-builder.Services.AddScoped<IUpdateOrderDtoUseCase, UpdateOrderDtoUseCase>();
+builder.Services.AddScoped<IUpdateOrderUseCase, UpdateOrderUseCase>();
 
 var app = builder.Build();
 
