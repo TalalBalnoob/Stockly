@@ -20,4 +20,8 @@
         <ProjectReference Include="..\Stockly.Infrastructure\Stockly.Infrastructure.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <Folder Include="ApiDtos\OrderDtos\"/>
+    </ItemGroup>
+
 </Project>
