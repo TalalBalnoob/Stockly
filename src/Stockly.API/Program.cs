@@ -4,6 +4,7 @@ using Stockly.Application.Interfaces.IRepository;
 using Stockly.Application.Interfaces.Services;
 using Stockly.Application.Interfaces.UseCases;
 using Stockly.Application.Services;
+using Stockly.Application.UseCases.CancelOrder;
 using Stockly.Application.UseCases.CreateNewOrder;
 using Stockly.Application.UseCases.CreateProductWithStock;
 using Stockly.Application.UseCases.DeleteOrder;
@@ -47,6 +48,8 @@ builder.Services.AddScoped<ICreateProductWithStockUseCase, CreateProductWithStoc
 builder.Services.AddScoped<IDeleteOrderUseCase, DeleteOrderUseCase>();
 builder.Services.AddScoped<IDeleteProductAndStock, DeleteProductAndStock>();
 builder.Services.AddScoped<IUpdateOrderUseCase, UpdateOrderUseCase>();
+builder.Services.AddScoped<ICancelOrderUseCase, CancelOrderUseCase>();
+builder.Services.AddScoped<IReturnOrderUseCase, ReturnOrderUseCase>();
 
 var app = builder.Build();
 
