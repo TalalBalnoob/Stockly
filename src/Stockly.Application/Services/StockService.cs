@@ -5,7 +5,10 @@ using Stockly.Domain.Entity;
 
 namespace Stockly.Application.Services;
 
-public class StockService(IStockRepository stockRepo, IProductRepository productRepo)
+public class StockService(
+	IStockRepository stockRepo,
+	IProductRepository productRepo,
+	IStockAdjustmentRepository adjustmentRepo)
 	: IStockService {
 	public async Task<IEnumerable<Stock>> GetAllStocks() {
 		return await stockRepo.GetAllAsync();
@@ -54,6 +57,23 @@ public class StockService(IStockRepository stockRepo, IProductRepository product
 		}
 
 		return await stockRepo.UpdateAsync(stockFromDb);
+	}
+
+	private async Task<Stock> AdjustStock(Guid productId, int quantity) {
+		var stock = await GetStockByProductId(productId);
+		if (quantity < 0) throw new Exception("Quantity cannot be negative");
+
+		stock.Quantity += quantity;
+		var updatedStock = await stockRepo.UpdateAsync(stock);
+
+		adjustmentRepo.AddAsync(new StockAdjustment {
+			ProductId = productId,
+			OrderId = Guid.Empty,
+			Quantity = quantity,
+			Reason = "Manual Stock adjustment"
+		});
+
+		return updatedStock;
 	}
 
 	public async Task DeleteStock(Guid id) {
