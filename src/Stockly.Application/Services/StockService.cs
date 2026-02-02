@@ -53,7 +53,7 @@ public class StockService(
 				ProductId = stockDto.ProductId,
 				OrderId = Guid.Empty,
 				Quantity = stockFromDb.Quantity,
-				Reason = "Manual Stock adjustment"
+				Reason = stockDto.Reason ?? "Manual Stock adjustment"
 			});
 		}
 

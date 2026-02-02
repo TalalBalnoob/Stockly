@@ -5,4 +5,5 @@ public class UpdateStockDto {
 	public Guid ProductId { get; set; }
 	public int Quantity { get; set; }
 	public string? StorageNote { get; set; }
+	public string? Reason { get; set; }
 }
