@@ -23,6 +23,7 @@ public class StockService(
 
 	public async Task<Stock?> GetStockByProductId(Guid productId) {
 		var product = await productRepo.GetByIdAsync(productId);
+		if (product == null) throw new Exception("Product not found");
 
 		var stock = await stockRepo.GetByIdAsync(product.StockId);
 		return stock;
