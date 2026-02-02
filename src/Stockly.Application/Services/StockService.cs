@@ -39,9 +39,19 @@ public class StockService(IStockRepository stockRepo, IProductRepository product
 		var stockFromDb = await GetStockByProductId(stockDto.Id);
 		if (stockFromDb == null) throw new Exception("Stock not found");
 
-		stockFromDb.Quantity = stockDto.InialQuantity;
 		stockFromDb.ProductId = stockDto.ProductId;
 		stockFromDb.StorageNote = stockDto.StorageNote ?? $"Product {stockDto.ProductId} has been updated";
+
+		if (stockFromDb.Quantity != stockDto.Quantity) {
+			stockFromDb.Quantity += stockDto.Quantity;
+
+			adjustmentRepo.AddAsync(new StockAdjustment {
+				ProductId = stockDto.ProductId,
+				OrderId = Guid.Empty,
+				Quantity = stockFromDb.Quantity,
+				Reason = "Manual Stock adjustment"
+			});
+		}
 
 		return await stockRepo.UpdateAsync(stockFromDb);
 	}
