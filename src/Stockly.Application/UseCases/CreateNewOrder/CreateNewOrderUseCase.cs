@@ -44,15 +44,19 @@ public class CreateNewOrderUseCase(
 			var stockUpdate = product.Stock;
 			stockUpdate.Quantity = product.Stock.Quantity - orderItem.Quantity;
 			await stockRepo.UpdateAsync(stockUpdate);
+		}
 
+		var createdOrder = await orderRepo.AddAsync(newOrder);
+
+		foreach (var orderItem in createdOrder.OrderItems) {
 			await adjustmentRepo.AddAsync(new StockAdjustment {
 				ProductId = orderItem.ProductId,
-				OrderId = newOrder.Id,
+				OrderId = createdOrder.Id,
 				Quantity = -orderItem.Quantity,
 				Reason = "Order created"
 			});
 		}
 
-		return await orderRepo.AddAsync(newOrder);
+		return createdOrder;
 	}
 }

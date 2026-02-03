@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Stockly.Domain.Entity;
 
@@ -12,5 +13,7 @@ public class OrderItem {
 
 	public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-	[ForeignKey(nameof(OrderId))] public Order Order { get; set; }
+	[JsonIgnore]
+	[ForeignKey(nameof(OrderId))]
+	public Order Order { get; set; }
 }

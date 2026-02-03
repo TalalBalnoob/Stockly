@@ -95,7 +95,7 @@ public class OrderController(
 		}
 	}
 
-	[HttpDelete]
+	[HttpDelete("{id}")]
 	public async Task<IActionResult> Delete(string id) {
 		try {
 			await deleteOrder.Execute(Guid.Parse(id));
