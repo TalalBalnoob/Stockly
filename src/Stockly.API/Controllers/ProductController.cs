@@ -1,5 +1,3 @@
-using System.Text.Json.Nodes;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Stockly.Application.DTOs;
 using Stockly.Application.Interfaces.Services;
@@ -67,7 +65,7 @@ public class ProductController(
 		}
 	}
 
-	[HttpDelete]
+	[HttpDelete("{id}")]
 	public async Task<IActionResult> Delete(string id) {
 		try {
 			await deleteProduct.Execute(Guid.Parse(id));
