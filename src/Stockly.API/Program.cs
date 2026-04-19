@@ -1,18 +1,8 @@
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Stockly.Application.Interfaces.IRepository;
-using Stockly.Application.Interfaces.Services;
-using Stockly.Application.Interfaces.UseCases;
-using Stockly.Application.Services;
-using Stockly.Application.UseCases.CancelOrder;
-using Stockly.Application.UseCases.CreateNewOrder;
-using Stockly.Application.UseCases.CreateProductWithStock;
-using Stockly.Application.UseCases.DeleteOrder;
-using Stockly.Application.UseCases.DeleteProductAndStock;
-using Stockly.Application.UseCases.UpdateOrder;
 using Stockly.Infrastructure;
 using Stockly.Infrastructure.Repositories;
-using IStockService = Stockly.Application.Interfaces.Services.IStockService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,14 +28,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
-builder.Services.AddScoped<IStockRepository, StockRepository>();
 builder.Services.AddScoped<IStockAdjustmentRepository, StockAdjustmentRepository>();
 
-builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<IStockService, StockService>();
-builder.Services.AddScoped<IOrderItemsService, OrderItemsService>();
-builder.Services.AddScoped<IOrderService, OrderService>();
-builder.Services.AddScoped<IStockAdjustmentService, StockAdjustmentService>();
+// builder.Services.AddScoped<IProductService, ProductService>();
+// builder.Services.AddScoped<IOrderItemsService, OrderItemsService>();
+// builder.Services.AddScoped<IOrderService, OrderService>();
+// builder.Services.AddScoped<IStockAdjustmentService, StockAdjustmentService>();
 
 var app = builder.Build();
 

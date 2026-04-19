@@ -9,25 +9,14 @@ public class ProductRepository(AppDbContext db) : IProductRepository {
 		return db.Products.ToList();
 	}
 
-	public async Task<IEnumerable<Product>> GetAllWithStockAsync() {
-		return db.Products.Include(p => p.Stock).ToList();
-	}
-
 	public async Task<Product?> GetByIdAsync(Guid id) {
 		return await db.Products.FindAsync(id);
-	}
-
-	public async Task<Product?> GetByIdWithStockAsync(Guid id) {
-		return db.Products.Include(p => p.Stock).FirstOrDefault(p => p.Id == id);
 	}
 
 	public async Task<Product> GetByNameAsync(string name) {
 		return db.Products.First(p => p.Name == name);
 	}
 
-	public async Task<Product> GetByNameWithStockAsync(string name) {
-		return db.Products.Include(p => p.Stock).First(p => p.Name == name);
-	}
 
 	public async Task<Product> AddAsync(Product product) {
 		db.Products.Add(product);
@@ -37,6 +26,13 @@ public class ProductRepository(AppDbContext db) : IProductRepository {
 
 	public async Task<Product> UpdateAsync(Product product) {
 		db.Products.Update(product);
+		await db.SaveChangesAsync();
+		return product;
+	}
+
+	public async Task<Product> AdjustStockAsync(Guid productId, int change) {
+		var product = await db.Products.FindAsync(productId);
+		product.Quantity += change;
 		await db.SaveChangesAsync();
 		return product;
 	}

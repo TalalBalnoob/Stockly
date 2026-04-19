@@ -15,25 +15,15 @@ public class FakeProductRepository : IProductRepository {
 		return db.ToList();
 	}
 
-	public async Task<IEnumerable<Product>> GetAllWithStockAsync() {
-		throw new NotImplementedException();
-	}
-
 	public async Task<Product?> GetByIdAsync(Guid id) {
 		return db.Find(p => id == p.Id);
 	}
-
-	public async Task<Product?> GetByIdWithStockAsync(Guid id) {
-		return db.Find(p => p.Id == id);
-	}
+	
 
 	public async Task<Product> GetByNameAsync(string name) {
 		return db.First(p => p.Name == name);
 	}
-
-	public async Task<Product> GetByNameWithStockAsync(string name) {
-		throw new NotImplementedException();
-	}
+	
 
 	public async Task<Product> AddAsync(Product product) {
 		db.Add(product);
@@ -44,6 +34,12 @@ public class FakeProductRepository : IProductRepository {
 	public async Task<Product> UpdateAsync(Product product) {
 		var index = db.FindIndex(p => p.Id == product.Id);
 		if (index != -1) db[index] = product;
+		return product;
+	}
+
+	public async Task<Product> AdjustStockAsync(Guid productId, int change) {
+		var product = db.Find(p => p.Id == productId);
+		product.Quantity += change;
 		return product;
 	}
 
