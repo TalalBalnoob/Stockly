@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+
 using Stockly.Application.Interfaces.IRepository;
 using Stockly.Domain.Entity;
 

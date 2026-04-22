@@ -18,12 +18,12 @@ public class FakeProductRepository : IProductRepository {
 	public async Task<Product?> GetByIdAsync(Guid id) {
 		return db.Find(p => id == p.Id);
 	}
-	
+
 
 	public async Task<Product> GetByNameAsync(string name) {
 		return db.First(p => p.Name == name);
 	}
-	
+
 
 	public async Task<Product> AddAsync(Product product) {
 		db.Add(product);

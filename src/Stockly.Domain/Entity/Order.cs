@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+
 using Stockly.Domain.Enums;
 
 namespace Stockly.Domain.Entity;

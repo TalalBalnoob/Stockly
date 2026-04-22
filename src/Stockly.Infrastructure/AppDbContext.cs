@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+
 using Stockly.Domain.Entity;
 
 namespace Stockly.Infrastructure;

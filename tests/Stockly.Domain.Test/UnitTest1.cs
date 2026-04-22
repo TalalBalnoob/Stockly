@@ -1,15 +1,12 @@
-﻿namespace Stockly.Domain.Test;
+namespace Stockly.Domain.Test;
 
-public class Tests
-{
-    [SetUp]
-    public void Setup()
-    {
-    }
+public class Tests {
+	[SetUp]
+	public void Setup() {
+	}
 
-    [Test]
-    public void Test1()
-    {
-        Assert.Pass();
-    }
+	[Test]
+	public void Test1() {
+		Assert.Pass();
+	}
 }
