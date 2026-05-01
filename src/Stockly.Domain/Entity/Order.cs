@@ -17,19 +17,19 @@ public class Order {
 
 	public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-	public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+	public List<OrderItem> OrderItems { get; set; } = new();
 
 
 	public void ChangePaymentStatus(PaymentStatus newStatus) {
-		PaymentStatus = newStatus;
+		this.PaymentStatus = newStatus;
 	}
 
 	public void ChangeStatus(OrderStatus newStatus) {
-		if (!IsValidTransition(Status, newStatus))
+		if (!IsValidTransition(this.Status, newStatus))
 			throw new InvalidOperationException(
-				$"Cannot change status from {Status} to {newStatus}");
+				$"Cannot change status from {this.Status} to {newStatus}");
 
-		Status = newStatus;
+		this.Status = newStatus;
 	}
 
 	private static bool IsValidTransition(
@@ -39,6 +39,7 @@ public class Order {
 			(OrderStatus.Processing, OrderStatus.Shipped) => true,
 			(OrderStatus.Processing, OrderStatus.Cancelled) => true,
 			(OrderStatus.Shipped, OrderStatus.Delivered) => true,
+			(OrderStatus.Shipped, OrderStatus.Returned) => true,
 			(OrderStatus.Delivered, OrderStatus.Returned) => true,
 			_ => false
 		};

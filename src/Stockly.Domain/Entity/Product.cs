@@ -11,7 +11,5 @@ public class Product {
 	public string? ImageUrl { get; set; }
 	public bool IsActive { get; set; }
 	public int Quantity { get; set; }
-	public Guid StockId { get; set; }
-
 	public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
