@@ -3,10 +3,12 @@ using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 using Stockly.Application.Interfaces.IRepository;
+using Stockly.Application.Interfaces.UseCases;
+using Stockly.Application.UseCases;
 using Stockly.Infrastructure;
 using Stockly.Infrastructure.Repositories;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder
 	.Services.AddControllers()
@@ -22,26 +24,23 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddOpenApi();
 
 // db config
-builder.Services.AddDbContext<AppDbContext>(options => {
-	options.UseSqlite("Data Source=stockly.db");
-});
+builder.Services.AddDbContext<AppDbContext>(options => { options.UseSqlite("Data Source=stockly.db"); });
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
 builder.Services.AddScoped<IStockAdjustmentRepository, StockAdjustmentRepository>();
 
-// builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<CreateProductUseCase>();
+builder.Services.AddScoped<UpdateProductUseCase>();
 // builder.Services.AddScoped<IOrderItemsService, OrderItemsService>();
 // builder.Services.AddScoped<IOrderService, OrderService>();
 // builder.Services.AddScoped<IStockAdjustmentService, StockAdjustmentService>();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment()) {
-	app.MapOpenApi();
-}
+if (app.Environment.IsDevelopment()) app.MapOpenApi();
 
 app.UseHttpsRedirection();
 
@@ -51,7 +50,6 @@ app.UseSwaggerUI();
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary) {
-	public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary) {
+	public int TemperatureF => 32 + (int)(this.TemperatureC / 0.5556);
 }
-
