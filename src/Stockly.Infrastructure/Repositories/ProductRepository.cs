@@ -6,8 +6,16 @@ using Stockly.Domain.Entity;
 namespace Stockly.Infrastructure.Repositories;
 
 public class ProductRepository(AppDbContext db) : IProductRepository {
-	public async Task<IEnumerable<Product>> GetAllAsync() {
-		return db.Products.ToList();
+	public async Task<IEnumerable<Product>> GetAllAsync(
+		int? lessThen,
+		int? moreThen,
+		bool? outOfStock
+	) {
+		var query = db.Products.AsQueryable();
+		if (lessThen.HasValue) query = query.Where(p => p.Quantity < lessThen.Value);
+		if (moreThen.HasValue) query = query.Where(p => p.Quantity > moreThen.Value);
+		if (outOfStock.HasValue) query = query.Where(p => p.Quantity <= 0);
+		return query.ToList();
 	}
 
 	public async Task<Product?> GetByIdAsync(Guid id) {

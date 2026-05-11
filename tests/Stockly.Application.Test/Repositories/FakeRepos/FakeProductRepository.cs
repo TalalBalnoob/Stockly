@@ -11,7 +11,9 @@ public class FakeProductRepository : IProductRepository {
 		this.db = [];
 	}
 
-	public async Task<IEnumerable<Product>> GetAllAsync() {
+	public async Task<IEnumerable<Product>> GetAllAsync(int? lessThen,
+		int? moreThen,
+		bool? outOfStock) {
 		return db.ToList();
 	}
 

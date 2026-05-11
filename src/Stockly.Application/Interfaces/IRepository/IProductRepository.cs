@@ -3,7 +3,12 @@ using Stockly.Domain.Entity;
 namespace Stockly.Application.Interfaces.IRepository;
 
 public interface IProductRepository {
-	Task<IEnumerable<Product>> GetAllAsync();
+	Task<IEnumerable<Product>> GetAllAsync(
+		int? lessThen,
+		int? moreThen,
+		bool? outOfStock
+	);
+
 	Task<Product?> GetByIdAsync(Guid id);
 	Task<Product> GetByNameAsync(string name);
 	Task<Product> AddAsync(Product product);
@@ -11,4 +16,3 @@ public interface IProductRepository {
 	Task<Product> AdjustStockAsync(Guid productId, int change);
 	Task DeleteAsync(Guid id);
 }
-

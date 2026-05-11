@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
+using Stockly.Application.Interfaces.IRepository;
 using Stockly.Application.Interfaces.UseCases;
 using Stockly.Application.UseCases;
 using Stockly.Domain.DTOs;
@@ -11,6 +12,7 @@ namespace Stockly.API.Controllers;
 [ApiController]
 [Route("[controller]")]
 public class ProductController(
+	IProductRepository productRepository,
 	CreateProductUseCase createProductUseCase,
 	UpdateProductUseCase updateProductUseCase,
 	DeleteProductUseCase deleteProductUseCase)
@@ -21,16 +23,13 @@ public class ProductController(
 	}
 
 	[HttpGet]
-	public IActionResult GetAll(
+	public async Task<IActionResult> GetAll(
 		[FromQuery] int? lessThen,
 		[FromQuery] int? moreThen,
 		[FromQuery] bool? outOfStock
 	) {
-		return this.Ok(new {
-			LessThen = lessThen,
-			MoreThen = moreThen,
-			OutOfStock = outOfStock
-		});
+		var productsList = await productRepository.GetAllAsync(lessThen, moreThen, outOfStock);
+		return this.Ok(productsList);
 	}
 
 	[HttpPost]
@@ -45,7 +44,6 @@ public class ProductController(
 		return this.Ok(updatedProduct);
 	}
 
-	// Delete
 	[HttpDelete("{id}")]
 	public IActionResult Delete(string id) {
 		deleteProductUseCase.Execute(id);
