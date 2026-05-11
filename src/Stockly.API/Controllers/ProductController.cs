@@ -35,7 +35,7 @@ public class ProductController(
 	[HttpPost]
 	public async Task<IActionResult> Create(NewProductDTO product) {
 		Product createdProduct = await createProductUseCase.Execute(product);
-		return this.Ok(createdProduct);
+		return this.CreatedAtAction(createdProduct.Id.ToString(), createdProduct);
 	}
 
 	[HttpPut]
@@ -45,8 +45,8 @@ public class ProductController(
 	}
 
 	[HttpDelete("{id}")]
-	public IActionResult Delete(string id) {
-		deleteProductUseCase.Execute(id);
-		return this.Ok();
+	public async Task<IActionResult> Delete(string id) {
+		await deleteProductUseCase.Execute(id);
+		return this.NoContent();
 	}
 }
