@@ -1,46 +1,80 @@
-## Build artifacts
-bin/
-obj/
-out/
+# =========================================
+# .NET
+# =========================================
 
-## VS Code
-.vscode/
-*.code-workspace
+**/bin/
+**/obj/
+**/out/
 
-## Rider
-.idea/
-
-## User-specific files
+# User-specific files
 *.user
 *.suo
 
-## Logs
-*.log
-
-## NuGet
+# NuGet
 *.nupkg
-# Packages folder
-packages/
-# The following two lines are recommended if you store NuGet packages in git
 *.snupkg
+**/packages/
 .nuget/
 
-## Entity Framework
-Migrations/
+# =========================================
+# Frontend (Node/React)
+# =========================================
 
-## Docker artifacts
+**/node_modules/
+**/dist/
+**/build/
+**/.next/
+**/.vite/
+
+# Package manager logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# =========================================
+# IDEs
+# =========================================
+
+.vscode/
+*.code-workspace
+.idea/
+
+# =========================================
+# Logs
+# =========================================
+
+*.log
+
+# =========================================
+# Docker
+# =========================================
+
 docker-compose.override.yml
 docker-compose*.log
 
-## OS garbage
+# =========================================
+# Databases
+# =========================================
+
+*.db
+
+# =========================================
+# OS files
+# =========================================
+
 .DS_Store
 Thumbs.db
 
-## Backup
+# =========================================
+# Temporary / Backup
+# =========================================
+
 *.bak
 *.tmp
 
-#other 
-.TODO.md
+# =========================================
+# Personal notes
+# =========================================
 
-*.db
+.TODO.md

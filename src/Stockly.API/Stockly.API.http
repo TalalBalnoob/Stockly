@@ -1,6 +1,0 @@
-@Stockly.API_HostAddress = http://localhost:5256
-
-GET {{Stockly.API_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
