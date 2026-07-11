@@ -10,18 +10,18 @@ namespace Stockly.Data;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddData(
-        this IServiceCollection services,
-        IConfiguration configuration)
-    {
-        services.AddDbContext<StocklyDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("Default")));
+	public static IServiceCollection AddData(
+		this IServiceCollection services,
+		IConfiguration configuration)
+	{
+		services.AddDbContext<StocklyDbContext>(options =>
+			options.UseNpgsql(configuration.GetConnectionString("Default")));
 
 
-        services.AddScoped<IProductsRepo, ProductsRepo>();
-        services.AddScoped<IOrdersRepo, OrdersRepo>();
-        services.AddScoped<IStockAdjustmentsRepo, StockAdjustmentsRepo>();
+		services.AddScoped<IProductsRepo, ProductsRepo>();
+		services.AddScoped<IOrdersRepo, OrdersRepo>();
+		services.AddScoped<IStockAdjustmentsRepo, StockAdjustmentsRepo>();
 
-        return services;
-    }
+		return services;
+	}
 }
