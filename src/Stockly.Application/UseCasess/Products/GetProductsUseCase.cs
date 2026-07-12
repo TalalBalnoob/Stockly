@@ -1,9 +1,9 @@
 using Stockly.Application.DTOs.Products;
 using Stockly.Application.Interfaces.Repositories;
-using Stockly.Application.Interfaces.UseCases;
+using Stockly.Application.Interfaces.UseCases.Products;
 using Stockly.Domain.Entities;
 
-namespace Stockly.Application.UseCases;
+namespace Stockly.Application.UseCases.Products;
 
 class GetProductsUseCase(IProductsRepo productRepo) : IGetProductsUseCase {
 	public async Task<IEnumerable<ProductResponseDto>> ExecuteAsync(ProductQueryParams queryParams) {

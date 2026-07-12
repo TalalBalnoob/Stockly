@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 
-using Stockly.Application.Interfaces.UseCases;
-using Stockly.Application.UseCases;
+using Stockly.Application.Interfaces.UseCases.Products;
+using Stockly.Application.UseCases.Products;
 
 
 namespace Stockly.Data;
@@ -11,10 +11,8 @@ public static class DependencyInjection {
 		this IServiceCollection services
 		) {
 
-
 		services.AddScoped<IGetProductsUseCase, GetProductsUseCase>();
 		services.AddScoped<IGetProductByIdUseCase, GetProductByIdUseCase>();
-
 
 		return services;
 	}
