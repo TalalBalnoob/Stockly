@@ -17,7 +17,7 @@ public interface IProductsRepo {
 
 	// Commands
 	Task<ProductResponseDto> AddAsync(Product product);
-	Task<ProductResponseDto> UpdateAsync(Guid id, UpdateProductDto dto);
+	Task<ProductResponseDto> UpdateAsync(Product product);
 	Task DeleteAsync(Guid id);
 
 	// Checks

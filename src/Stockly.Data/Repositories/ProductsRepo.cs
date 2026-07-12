@@ -67,19 +67,8 @@ public class ProductsRepo : IProductsRepo {
 		return MapToResponseDto(product);
 	}
 
-	public async Task<ProductResponseDto> UpdateAsync(Guid id, UpdateProductDto dto) {
-		var product = await _context.Products.FindAsync(id);
-		if (product == null) {
-			throw new KeyNotFoundException($"Product with ID {id} not found.");
-		}
-
-		if (dto.Name != null) product.Name = dto.Name;
-		product.Price = dto.Price;
-		product.Quantity = dto.Quantity;
-		if (dto.Description != null) product.Description = dto.Description;
-		if (dto.StorageNote != null) product.StorageNote = dto.StorageNote;
-		product.IsAvailable = dto.IsAvailable;
-
+	public async Task<ProductResponseDto> UpdateAsync(Product product) {
+		_context.Products.Update(product);
 		await _context.SaveChangesAsync();
 
 		return MapToResponseDto(product);
