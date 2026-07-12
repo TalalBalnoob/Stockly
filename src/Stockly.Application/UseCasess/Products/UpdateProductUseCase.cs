@@ -7,14 +7,14 @@ using Stockly.Domain.Entities;
 namespace Stockly.Application.UseCases.Products;
 
 
-class UpdateProductUseCase(IProductsRepo productsRepo) : IUpdateProductUseCase {
+public class UpdateProductUseCase(IProductsRepo productsRepo) : IUpdateProductUseCase {
 
 
-	public async Task<ProductResponseDto> ExecuteAsync(UpdateProductDto dto) {
-		var product = await productsRepo.GetByIdAsync(dto.Id);
+	public async Task<ProductResponseDto> ExecuteAsync(Guid id, UpdateProductDto dto) {
+		var product = await productsRepo.GetByIdAsync(id);
 
 		if (product == null) {
-			throw new NotFoundException($"Product with id {dto.Id} not found.");
+			throw new NotFoundException($"Product with id {id} not found.");
 		}
 
 		if (dto.Name != null) product.Name = dto.Name;

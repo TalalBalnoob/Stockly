@@ -2,6 +2,6 @@ using Stockly.Application.DTOs.Products;
 
 namespace Stockly.Application.Interfaces.UseCases.Products;
 
-interface ICreateProductUseCase {
+public interface ICreateProductUseCase {
 	Task<ProductResponseDto> ExecuteAsync(CreateProductDto dto);
 }

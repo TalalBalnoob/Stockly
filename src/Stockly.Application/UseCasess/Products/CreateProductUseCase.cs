@@ -5,7 +5,7 @@ using Stockly.Domain.Entities;
 
 namespace Stockly.Application.UseCases.Products;
 
-class CreateProductUseCase(IProductsRepo productsRepo) : ICreateProductUseCase {
+public class CreateProductUseCase(IProductsRepo productsRepo) : ICreateProductUseCase {
 
 	public async Task<ProductResponseDto> ExecuteAsync(CreateProductDto dto) {
 		var product = new Product {
