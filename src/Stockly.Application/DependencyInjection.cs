@@ -11,8 +11,10 @@ public static class DependencyInjection {
 		this IServiceCollection services
 		) {
 
+		// Products Use Cases
 		services.AddScoped<IGetProductsUseCase, GetProductsUseCase>();
 		services.AddScoped<IGetProductByIdUseCase, GetProductByIdUseCase>();
+		services.AddScoped<ICreateProductUseCase, CreateProductUseCase>();
 
 		return services;
 	}
