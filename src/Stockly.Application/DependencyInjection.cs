@@ -1,6 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 
+using Stockly.Application.Interfaces.UseCases.Orders;
 using Stockly.Application.Interfaces.UseCases.Products;
+using Stockly.Application.UseCases.Orders;
 using Stockly.Application.UseCases.Products;
 
 
@@ -17,6 +19,9 @@ public static class DependencyInjection {
 		services.AddScoped<ICreateProductUseCase, CreateProductUseCase>();
 		services.AddScoped<IUpdateProductUseCase, UpdateProductUseCase>();
 		services.AddScoped<IDeleteProductUseCase, DeleteProductUseCase>();
+
+		// Orders Use Cases
+		services.AddScoped<IGetAllOrdersUseCase, GetAllOrdersUseCase>();
 
 		return services;
 	}
