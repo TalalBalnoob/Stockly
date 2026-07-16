@@ -11,8 +11,16 @@ public class GetAllOrdersUseCase : IGetAllOrdersUseCase {
 		_orderRepository = orderRepository;
 	}
 
-	public async Task<IEnumerable<OrderResponseDto>> ExecuteAsync() {
+	public async Task<IEnumerable<OrderResponseDto>> ExecuteAsync(OrderQueryParams queryParams) {
 		IEnumerable<OrderResponseDto> orders = await _orderRepository.GetAllAsync();
+
+		if (queryParams.Search is not null) {
+			orders = orders.Where(order => order.CustomerName.Contains(queryParams.Search, StringComparison.OrdinalIgnoreCase))
+						   .Where(order => order.CustomerContact.Contains(queryParams.Search, StringComparison.OrdinalIgnoreCase))
+						   .Where(order => order.PaymentReference.Contains(queryParams.Search, StringComparison.OrdinalIgnoreCase))
+						   .Where(order => order.ShippingAddress.Contains(queryParams.Search, StringComparison.OrdinalIgnoreCase));
+		}
+
 		return orders.Select(order => new OrderResponseDto {
 			Id = order.Id,
 			Status = order.Status,
