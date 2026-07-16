@@ -152,7 +152,6 @@ public class OrdersRepo : IOrdersRepo {
 			OrderItems = order.OrderItems.Select(oi => new OrderItemResponseDto {
 				Id = oi.Id,
 				ProductId = oi.ProductId,
-				ProductName = oi.Product?.Name ?? "Unknown Product",
 				Quantity = oi.Quantity,
 				Price = oi.Price
 			}).ToList()
