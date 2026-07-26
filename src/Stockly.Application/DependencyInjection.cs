@@ -23,6 +23,7 @@ public static class DependencyInjection {
 		// Orders Use Cases
 		services.AddScoped<IGetAllOrdersUseCase, GetAllOrdersUseCase>();
 		services.AddScoped<IGetOrderByIdUseCase, GetOrderByIdUseCase>();
+		services.AddScoped<ICreateOrderUseCase, CreateOrderUseCase>();
 
 		return services;
 	}
