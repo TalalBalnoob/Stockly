@@ -1,11 +1,13 @@
 using Stockly.Application.DTOs.Orders;
 using Stockly.Application.DTOs.Products;
 using Stockly.Application.Interfaces.Repositories;
+using Stockly.Application.Interfaces.UseCases.Orders;
 using Stockly.Domain.Entities;
 
 namespace Stockly.Application.UseCases.Orders;
 
-public class CreateOrderUseCase {
+
+public class CreateOrderUseCase : ICreateOrderUseCase {
 	private readonly IOrdersRepo _orderRepository;
 	private readonly IProductsRepo _productRepository;
 
