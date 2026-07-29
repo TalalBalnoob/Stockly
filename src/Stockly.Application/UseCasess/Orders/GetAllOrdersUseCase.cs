@@ -1,6 +1,7 @@
 using Stockly.Application.DTOs.Orders;
 using Stockly.Application.Interfaces.Repositories;
 using Stockly.Application.Interfaces.UseCases.Orders;
+using Stockly.Domain.Entities;
 
 namespace Stockly.Application.UseCases.Orders;
 
@@ -12,7 +13,7 @@ public class GetAllOrdersUseCase : IGetAllOrdersUseCase {
 	}
 
 	public async Task<IEnumerable<OrderResponseDto>> ExecuteAsync(OrderQueryParams queryParams) {
-		IEnumerable<OrderResponseDto> orders = await _orderRepository.GetAllAsync();
+		IEnumerable<Order> orders = await _orderRepository.GetAllAsync();
 
 		if (queryParams.Search is not null) {
 			orders = orders.Where(order => order.CustomerName.Contains(queryParams.Search, StringComparison.OrdinalIgnoreCase))

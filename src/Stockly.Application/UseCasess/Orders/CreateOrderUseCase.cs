@@ -32,7 +32,7 @@ public class CreateOrderUseCase : ICreateOrderUseCase {
 		// 2.make order items from the product ids
 		var orderItems = new List<OrderItem>();
 		foreach (var newItem in request.OrderItems) {
-			ProductResponseDto product = await _productRepository.GetByIdAsync(newItem.ProductId)
+			Product product = await _productRepository.GetByIdAsync(newItem.ProductId)
 										 ?? throw new Exception($"Product with id {newItem.ProductId} not found");
 
 			OrderItem orderItem = new OrderItem {

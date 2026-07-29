@@ -6,17 +6,19 @@ namespace Stockly.Application.Interfaces.Repositories;
 
 public interface IOrdersRepo {
 	// Queries
-	Task<IEnumerable<OrderResponseDto>> GetAllAsync();
-	Task<OrderResponseDto?> GetByIdAsync(Guid id);
-	Task<IEnumerable<OrderResponseDto>> GetByCustomerNameAsync(string customerName);
-	Task<IEnumerable<OrderResponseDto>> GetByStatusAsync(Order_status status);
-	Task<IEnumerable<OrderResponseDto>> GetByDateRangeAsync(DateTime start, DateTime end);
+	Task<IEnumerable<Order>> GetAllAsync();
+	Task<Order?> GetByIdAsync(Guid id);
+	Task<IEnumerable<Order>> GetByCustomerNameAsync(string customerName);
+	Task<IEnumerable<Order>> GetByStatusAsync(Order_status status);
+	Task<IEnumerable<Order>> GetByDateRangeAsync(DateTime start, DateTime end);
 
 	// Commands
-	Task<OrderResponseDto> AddAsync(Order order);
-	Task<OrderResponseDto> UpdateAsync(Guid id, UpdateOrderDto dto);
+	Task<Order> AddAsync(Order order);
+	Task<Order> UpdateAsync(Guid id, Order order);
 	Task DeleteAsync(Guid id);
 
 	// Checks
 	Task<bool> ExistsAsync(Guid id);
+
+	abstract OrderResponseDto MapToResponseDto(Order order);
 }
