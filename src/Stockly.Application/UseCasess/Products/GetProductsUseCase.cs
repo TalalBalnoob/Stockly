@@ -7,7 +7,7 @@ namespace Stockly.Application.UseCases.Products;
 
 class GetProductsUseCase(IProductsRepo productRepo) : IGetProductsUseCase {
 	public async Task<IEnumerable<ProductResponseDto>> ExecuteAsync(ProductQueryParams queryParams) {
-		IEnumerable<ProductResponseDto> products = await productRepo.GetAllAsync();
+		IEnumerable<Product> products = await productRepo.GetAllAsync();
 
 		// Apply filters based on query parameters
 		// Filter by availability
@@ -29,6 +29,13 @@ class GetProductsUseCase(IProductsRepo productRepo) : IGetProductsUseCase {
 			products = products.Where(p => p.Quantity <= queryParams.MaxQuantity.Value);
 		}
 
-		return products;
+		return products.Select(p => new ProductResponseDto {
+			Id = p.Id,
+			Name = p.Name,
+			Description = p.Description,
+			Price = p.Price,
+			Quantity = p.Quantity,
+			IsAvailable = p.IsAvailable
+		});
 	}
 }

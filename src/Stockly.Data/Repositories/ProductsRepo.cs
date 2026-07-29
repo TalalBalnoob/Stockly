@@ -14,64 +14,58 @@ public class ProductsRepo : IProductsRepo {
 		_context = context;
 	}
 
-	public async Task<IEnumerable<ProductResponseDto>> GetAllAsync() {
+	public async Task<IEnumerable<Product>> GetAllAsync() {
 		return await _context.Products
-			.Select(p => MapToResponseDto(p))
 			.ToListAsync();
 	}
 
-	public async Task<ProductResponseDto?> GetByIdAsync(Guid id) {
+	public async Task<Product?> GetByIdAsync(Guid id) {
 		var product = await _context.Products.FindAsync(id);
-		return product != null ? MapToResponseDto(product) : null;
+		return product != null ? product : null;
 	}
 
-	public async Task<IEnumerable<ProductResponseDto>> GetByNameAsync(string name) {
+	public async Task<IEnumerable<Product>> GetByNameAsync(string name) {
 		return await _context.Products
 			.Where(p => p.Name.Contains(name))
-			.Select(p => MapToResponseDto(p))
 			.ToListAsync();
 	}
 
-	public async Task<IEnumerable<ProductResponseDto>> GetAvailableAsync() {
+	public async Task<IEnumerable<Product>> GetAvailableAsync() {
 		return await _context.Products
 			.Where(p => p.IsAvailable)
-			.Select(p => MapToResponseDto(p))
 			.ToListAsync();
 	}
 
-	public async Task<IEnumerable<ProductResponseDto>> GetOutOfStockAsync() {
+	public async Task<IEnumerable<Product>> GetOutOfStockAsync() {
 		return await _context.Products
 			.Where(p => p.Quantity <= 0)
-			.Select(p => MapToResponseDto(p))
 			.ToListAsync();
 	}
 
-	public async Task<IEnumerable<ProductResponseDto>> GetByPriceRangeAsync(decimal minPrice, decimal maxPrice) {
+	public async Task<IEnumerable<Product>> GetByPriceRangeAsync(decimal minPrice, decimal maxPrice) {
 		return await _context.Products
 			.Where(p => p.Price >= minPrice && p.Price <= maxPrice)
-			.Select(p => MapToResponseDto(p))
 			.ToListAsync();
 	}
 
-	public async Task<IEnumerable<ProductResponseDto>> GetLowStockAsync(int threshold) {
+	public async Task<IEnumerable<Product>> GetLowStockAsync(int threshold) {
 		return await _context.Products
 			.Where(p => p.Quantity <= threshold)
-			.Select(p => MapToResponseDto(p))
 			.ToListAsync();
 	}
 
-	public async Task<ProductResponseDto> AddAsync(Product product) {
+	public async Task<Product> AddAsync(Product product) {
 		_context.Products.Add(product);
 		await _context.SaveChangesAsync();
 
-		return MapToResponseDto(product);
+		return product;
 	}
 
-	public async Task<ProductResponseDto> UpdateAsync(Product product) {
+	public async Task<Product> UpdateAsync(Product product) {
 		_context.Products.Update(product);
 		await _context.SaveChangesAsync();
 
-		return MapToResponseDto(product);
+		return product;
 	}
 
 	public async Task DeleteAsync(Guid id) {
@@ -86,7 +80,8 @@ public class ProductsRepo : IProductsRepo {
 		return await _context.Products.AnyAsync(p => p.Id == id);
 	}
 
-	private static ProductResponseDto MapToResponseDto(Product product) {
+
+	public ProductResponseDto MapToResponseDto(Product product) {
 		return new ProductResponseDto {
 			Id = product.Id,
 			Name = product.Name,

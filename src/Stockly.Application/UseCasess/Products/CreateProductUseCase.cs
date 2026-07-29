@@ -19,6 +19,8 @@ public class CreateProductUseCase(IProductsRepo productsRepo) : ICreateProductUs
 			CreatedAt = DateTime.UtcNow
 		};
 
-		return await productsRepo.AddAsync(product);
+		return await productsRepo
+					 .AddAsync(product)
+					 .ContinueWith(task => productsRepo.MapToResponseDto(task.Result));
 	}
 }

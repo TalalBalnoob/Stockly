@@ -8,12 +8,12 @@ namespace Stockly.Application.UseCases.Products;
 
 class GetProductByIdUseCase(IProductsRepo productRepo) : IGetProductByIdUseCase {
 	public async Task<ProductResponseDto> ExecuteAsync(Guid productId) {
-		ProductResponseDto product = await productRepo.GetByIdAsync(productId);
+		Product product = await productRepo.GetByIdAsync(productId);
 
 		if (product == null) {
 			throw new NotFoundException($"Product with ID {productId} not found.");
 		}
 
-		return product;
+		return productRepo.MapToResponseDto(product);
 	}
 }

@@ -34,6 +34,6 @@ public class UpdateProductUseCase(IProductsRepo productsRepo) : IUpdateProductUs
 			IsAvailable = product.IsAvailable
 		};
 
-		return await productsRepo.UpdateAsync(updatedProduct);
+		return await productsRepo.UpdateAsync(updatedProduct).ContinueWith(task => productsRepo.MapToResponseDto(task.Result));
 	}
 }
