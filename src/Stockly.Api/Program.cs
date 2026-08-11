@@ -17,6 +17,10 @@ app.UseMiddleware<ExceptionMiddleware>();
 // Middleware
 if (app.Environment.IsDevelopment()) {
 	app.MapOpenApi();
+
+	app.UseSwaggerUI(options => {
+		options.SwaggerEndpoint("/openapi/v1.json", "Stockly API v1");
+	});
 }
 
 app.UseHttpsRedirection();

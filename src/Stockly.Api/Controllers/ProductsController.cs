@@ -1,5 +1,3 @@
-using System.Net;
-
 using Microsoft.AspNetCore.Mvc;
 
 using Stockly.Application.DTOs.Products;
@@ -9,7 +7,7 @@ namespace Stockly.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-class ProductsController : ControllerBase {
+public class ProductsController : ControllerBase {
 	IGetProductByIdUseCase _getProductByIdUseCase;
 	IGetProductsUseCase _getProductsUseCase;
 	ICreateProductUseCase _createProductUseCase;
