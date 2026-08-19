@@ -26,19 +26,19 @@ public class OrdersController : ControllerBase {
 	}
 
 	[HttpGet]
-	public async Task<IActionResult> GetProducts([FromQuery] OrderQueryParams query) {
+	public async Task<IActionResult> GetOrders([FromQuery] OrderQueryParams query) {
 		return Ok(await _getAllOrdersUseCase.ExecuteAsync(query));
 	}
 
 	[HttpGet("{id}")]
-	public async Task<IActionResult> GetProductById(Guid id) {
+	public async Task<IActionResult> GetOrdersById(Guid id) {
 		return Ok(await _getOrderByIdUseCase.ExecuteAsync(id));
 	}
 
 	[HttpPost]
-	public async Task<IActionResult> CreateProduct([FromBody] CreateOrderRequest order) {
+	public async Task<IActionResult> CreateOrders([FromBody] CreateOrderRequest order) {
 		var createdProduct = await _createOrderUseCase.ExecuteAsync(order);
-		return CreatedAtAction(nameof(GetProductById), new { id = createdProduct.Id }, createdProduct);
+		return CreatedAtAction(nameof(GetOrdersById), new { id = createdProduct.Id }, createdProduct);
 	}
 
 	// [HttpPut("{id}")]`
