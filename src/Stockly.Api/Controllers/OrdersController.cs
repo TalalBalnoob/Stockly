@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using Stockly.Application.DTOs.Orders;
-using Stockly.Application.DTOs.Products;
 using Stockly.Application.Interfaces.UseCases.Orders;
-using Stockly.Application.Interfaces.UseCases.Products;
 
 namespace Stockly.Api.Controllers;
 
