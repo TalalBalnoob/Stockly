@@ -24,6 +24,7 @@ public static class DependencyInjection {
 		services.AddScoped<IGetAllOrdersUseCase, GetAllOrdersUseCase>();
 		services.AddScoped<IGetOrderByIdUseCase, GetOrderByIdUseCase>();
 		services.AddScoped<ICreateOrderUseCase, CreateOrderUseCase>();
+		services.AddScoped<IUpdateOrderUseCase, UpdateOrderUseCase>();
 
 		return services;
 	}
