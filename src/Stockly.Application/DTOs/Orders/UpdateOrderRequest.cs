@@ -7,16 +7,16 @@ public class UpdateOrderRequest {
 	public Guid Id { get; set; }
 	public string? CustomerName { get; set; }
 	public string? CustomerContact { get; set; }
-	public Order_status? Status { get; set; } = Order_status.Pending;
-	public Payment_status? PaymentStatus { get; set; } = Payment_status.Pending;
-	public decimal? Total { get; set; } = 0;
+	public Order_status? Status { get; set; }
+	public Payment_status? PaymentStatus { get; set; }
+	public decimal? Total { get; set; }
 	public string? PaymentMethod { get; set; }
 	public string? PaymentReference { get; set; }
 	public string? ShippingAddress { get; set; }
 
-	public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
+	public DateTime? CreatedAt { get; set; }
 
-	public List<CreateOrderItemRequest> OrderItems { get; set; } = new();
+	public List<CreateOrderItemRequest>? OrderItems { get; set; }
 
 }
 
