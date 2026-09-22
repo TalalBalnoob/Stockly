@@ -18,6 +18,9 @@ public class AdjustStockUseCase : IAdjustStockUseCase {
 		if (product == null) {
 			throw new ArgumentException($"Product with ID {request.ProductId} not found.");
 		}
+		if (product.Quantity + request.Change < 0) {
+			throw new ArgumentException("Stock change would result in negative inventory.");
+		}
 
 		var stockAdjustment = new Domain.Entities.StockAdjustment {
 			ProductId = request.ProductId,
