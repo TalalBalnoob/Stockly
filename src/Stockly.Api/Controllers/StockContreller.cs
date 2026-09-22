@@ -34,9 +34,9 @@ public class StockController : ControllerBase {
 	}
 
 	[HttpPost("{productId}/set-stock")]
-	public async Task<IActionResult> AdjustStock([FromBody] CreateStockAdjustmentDto request) {
+	public async Task<IActionResult> AdjustStock(Guid productId, [FromBody] CreateStockAdjustmentDto request) {
 		try {
-			request.ProductId = Guid.Parse(RouteData.Values["productId"].ToString() ?? throw new ArgumentNullException("Product ID is missing in the route."));
+			request.ProductId = productId;
 			var response = await _adjustStockUseCase.ExecuteAsync(request);
 			return Ok(response);
 		}
