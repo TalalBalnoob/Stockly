@@ -1,7 +1,9 @@
 using Stockly.Application.DTOs.Orders;
 using Stockly.Application.DTOs.Products;
+using Stockly.Application.DTOs.StockAdjustments;
 using Stockly.Application.Interfaces.Repositories;
 using Stockly.Application.Interfaces.UseCases.Orders;
+using Stockly.Application.Interfaces.UseCases.StockAdjustment;
 using Stockly.Domain.Entities;
 
 namespace Stockly.Application.UseCases.Orders;
@@ -10,10 +12,14 @@ namespace Stockly.Application.UseCases.Orders;
 public class CreateOrderUseCase : ICreateOrderUseCase {
 	private readonly IOrdersRepo _orderRepository;
 	private readonly IProductsRepo _productRepository;
+	private readonly IStockAdjustmentsRepo _stockAdjustments;
+	private readonly IAdjustStockUseCase _adjustStockUseCase;
 
-	public CreateOrderUseCase(IOrdersRepo orderRepository, IProductsRepo productRepository) {
+	public CreateOrderUseCase(IOrdersRepo orderRepository, IProductsRepo productRepository, IStockAdjustmentsRepo stockAdjustments, IAdjustStockUseCase adjustStockUseCase) {
 		_orderRepository = orderRepository;
 		_productRepository = productRepository;
+		_stockAdjustments = stockAdjustments;
+		_adjustStockUseCase = adjustStockUseCase;
 	}
 
 	public async Task<OrderResponseDto> ExecuteAsync(CreateOrderRequest request) {
@@ -35,6 +41,8 @@ public class CreateOrderUseCase : ICreateOrderUseCase {
 			Product product = await _productRepository.GetByIdAsync(newItem.ProductId)
 										 ?? throw new Exception($"Product with id {newItem.ProductId} not found");
 
+			if (product.Quantity < newItem.Quantity) throw new Exception($"out of range quantity");
+
 			OrderItem orderItem = new OrderItem {
 				ProductId = newItem.ProductId,
 				Quantity = newItem.Quantity,
@@ -48,6 +56,14 @@ public class CreateOrderUseCase : ICreateOrderUseCase {
 		// 3.Save the order to the database
 		order.OrderItems = orderItems;
 		var savedOrder = await _orderRepository.AddAsync(order);
+		orderItems.ForEach((item) => {
+			_adjustStockUseCase.ExecuteAsync(new CreateStockAdjustmentDto {
+				ProductId = item.ProductId,
+				Change = item.Quantity,
+				Reason = "New order",
+				RelatedOrderId = savedOrder.Id
+			});
+		});
 		// 4.Return the order response dto
 
 		return new OrderResponseDto {

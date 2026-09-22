@@ -2,8 +2,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 using Stockly.Application.Interfaces.UseCases.Orders;
 using Stockly.Application.Interfaces.UseCases.Products;
+using Stockly.Application.Interfaces.UseCases.StockAdjustment;
 using Stockly.Application.UseCases.Orders;
 using Stockly.Application.UseCases.Products;
+using Stockly.Application.UseCases.StockAdjustment;
 
 
 namespace Stockly.Data;
@@ -25,6 +27,9 @@ public static class DependencyInjection {
 		services.AddScoped<IGetOrderByIdUseCase, GetOrderByIdUseCase>();
 		services.AddScoped<ICreateOrderUseCase, CreateOrderUseCase>();
 		services.AddScoped<IUpdateOrderUseCase, UpdateOrderUseCase>();
+
+		// Stock Adjustment Use Case
+		services.AddScoped<IAdjustStockUseCase, AdjustStockUseCase>();
 
 		return services;
 	}
