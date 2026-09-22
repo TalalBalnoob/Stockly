@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using Stockly.Application.DTOs.StockAdjustments;
+using Stockly.Application.Interfaces.Repositories;
 using Stockly.Application.Interfaces.UseCases.StockAdjustment;
 
 namespace Stockly.Application.UseCases.StockAdjustment;
@@ -9,9 +10,27 @@ namespace Stockly.Application.UseCases.StockAdjustment;
 [Route("api/[controller]")]
 public class StockController : ControllerBase {
 	private readonly IAdjustStockUseCase _adjustStockUseCase;
+	private readonly IStockAdjustmentsRepo _stockAdjustmentsRepo;
 
-	public StockController(IAdjustStockUseCase adjustStockUseCase) {
+	public StockController(IAdjustStockUseCase adjustStockUseCase, IStockAdjustmentsRepo stockAdjustmentsRepo) {
 		_adjustStockUseCase = adjustStockUseCase;
+		_stockAdjustmentsRepo = stockAdjustmentsRepo;
+	}
+
+	[HttpGet("{productId}/stock")]
+	public async Task<IActionResult> GetStock(Guid productId) {
+		try {
+			var stockAdjustments = await _stockAdjustmentsRepo.GetByProductIdAsync(productId);
+			if (stockAdjustments == null || !stockAdjustments.Any()) {
+				return NotFound(new { message = "No stock adjustments found for the specified product." });
+			}
+
+			var currentStock = stockAdjustments.Sum(sa => sa.Change);
+			return Ok(new { ProductId = productId, CurrentStock = currentStock });
+		}
+		catch (Exception ex) {
+			return StatusCode(500, new { message = "An error occurred while retrieving stock information.", details = ex.Message });
+		}
 	}
 
 	[HttpPost("{productId}/set-stock")]
