@@ -45,7 +45,7 @@ public class CreateOrderUseCase : ICreateOrderUseCase {
 
 			OrderItem orderItem = new OrderItem {
 				ProductId = newItem.ProductId,
-				Quantity = newItem.Quantity,
+				Quantity = -newItem.Quantity,
 				Price = newItem.CustomPrice != 0 ? newItem.CustomPrice : product.Price
 			};
 			orderItems.Add(orderItem);

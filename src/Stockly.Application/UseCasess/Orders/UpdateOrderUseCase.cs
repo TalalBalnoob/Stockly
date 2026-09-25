@@ -1,7 +1,9 @@
 using Stockly.Application.DTOs.Orders;
+using Stockly.Application.DTOs.StockAdjustments;
 using Stockly.Application.Exceptions;
 using Stockly.Application.Interfaces.Repositories;
 using Stockly.Application.Interfaces.UseCases.Orders;
+using Stockly.Application.Interfaces.UseCases.StockAdjustment;
 using Stockly.Domain.Entities;
 
 namespace Stockly.Application.UseCases.Orders;
@@ -9,10 +11,12 @@ namespace Stockly.Application.UseCases.Orders;
 public class UpdateOrderUseCase : IUpdateOrderUseCase {
 	private readonly IOrdersRepo _orderRepository;
 	private readonly IProductsRepo _productRepository;
+	private readonly IAdjustStockUseCase _stockAdjustments;
 
-	public UpdateOrderUseCase(IOrdersRepo orderRepository, IProductsRepo productRepository) {
+	public UpdateOrderUseCase(IOrdersRepo orderRepository, IProductsRepo productRepository, IAdjustStockUseCase stockAdjustments) {
 		_orderRepository = orderRepository;
 		_productRepository = productRepository;
+		_stockAdjustments = stockAdjustments;
 	}
 
 	public async Task ExecuteAsync(UpdateOrderRequest request) {
@@ -60,6 +64,12 @@ public class UpdateOrderUseCase : IUpdateOrderUseCase {
 			.ToList();
 
 		foreach (var removedItem in removedItems) {
+			await _stockAdjustments.ExecuteAsync(new CreateStockAdjustmentDto {
+				ProductId = removedItem.ProductId,
+				Change = removedItem.Quantity,
+				Reason = "Order item removed",
+				RelatedOrderId = order.Id
+			});
 			order.OrderItems.Remove(removedItem);
 		}
 
@@ -81,6 +91,21 @@ public class UpdateOrderUseCase : IUpdateOrderUseCase {
 					ProductId = requestedItem.ProductId,
 					Quantity = requestedItem.Quantity,
 					Price = price
+				});
+				await _stockAdjustments.ExecuteAsync(new CreateStockAdjustmentDto {
+					ProductId = requestedItem.ProductId,
+					Change = -requestedItem.Quantity,
+					Reason = "Order item added",
+					RelatedOrderId = order.Id
+				});
+			}
+			else {
+				int quantityChange = requestedItem.Quantity - existingItem.Quantity;
+				await _stockAdjustments.ExecuteAsync(new CreateStockAdjustmentDto {
+					ProductId = requestedItem.ProductId,
+					Change = -quantityChange,
+					Reason = "Order item quantity changed",
+					RelatedOrderId = order.Id
 				});
 				continue;
 			}
