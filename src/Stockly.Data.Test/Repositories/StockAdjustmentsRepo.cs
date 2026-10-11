@@ -1,64 +1,53 @@
-using Microsoft.EntityFrameworkCore;
+using System.Collections.ObjectModel;
 
 using Stockly.Application.DTOs.StockAdjustments;
 using Stockly.Application.Interfaces.Repositories;
-using Stockly.Data.Persistence;
 using Stockly.Domain.Entities;
 
 namespace Stockly.Data.Repositories;
 
 public class StockAdjustmentsRepo : IStockAdjustmentsRepo {
-	private readonly StocklyDbContext _context;
+	private readonly Collection<StockAdjustment> _context;
 
-	public StockAdjustmentsRepo(StocklyDbContext context) {
+	public StockAdjustmentsRepo(Collection<StockAdjustment> context) {
 		_context = context;
 	}
 
 	public async Task<IEnumerable<StockAdjustmentResponseDto>> GetAllAsync() {
-		return await _context.StockAdjustments
-			.Include(sa => sa.Product)
+		return _context
 			.Select(sa => MapToResponseDto(sa))
-			.ToListAsync();
+			.ToList();
 	}
 
 	public async Task<StockAdjustmentResponseDto?> GetByIdAsync(Guid id) {
-		var adjustment = await _context.StockAdjustments
-			.Include(sa => sa.Product)
-			.FirstOrDefaultAsync(sa => sa.Id == id);
+		var adjustment = _context
+			.First(sa => sa.Id == id);
 
 		return adjustment != null ? MapToResponseDto(adjustment) : null;
 	}
 
 	public async Task<IEnumerable<StockAdjustmentResponseDto>> GetByProductIdAsync(Guid productId) {
-		return await _context.StockAdjustments
-			.Include(sa => sa.Product)
+		return _context
 			.Where(sa => sa.ProductId == productId)
 			.Select(sa => MapToResponseDto(sa))
-			.ToListAsync();
+			.ToList();
 	}
 
 	public async Task<IEnumerable<StockAdjustmentResponseDto>> GetByRelatedOrderIdAsync(Guid orderId) {
-		return await _context.StockAdjustments
-			.Include(sa => sa.Product)
+		return _context
 			.Where(sa => sa.RelatedOrderId == orderId)
 			.Select(sa => MapToResponseDto(sa))
-			.ToListAsync();
+			.ToList();
 	}
 
 	public async Task<StockAdjustmentResponseDto> AddAsync(StockAdjustment stockAdjustment) {
-		var product = await _context.Products.FindAsync(stockAdjustment.ProductId);
-		if (product == null) {
-			throw new KeyNotFoundException($"Product with ID {stockAdjustment.ProductId} not found.");
-		}
-
-		_context.StockAdjustments.Add(stockAdjustment);
-		await _context.SaveChangesAsync();
+		_context.Add(stockAdjustment);
 
 		return MapToResponseDto(stockAdjustment);
 	}
 
 	public async Task<bool> ExistsAsync(Guid id) {
-		return await _context.StockAdjustments.AnyAsync(sa => sa.Id == id);
+		return _context.Any(sa => sa.Id == id);
 	}
 
 	private static StockAdjustmentResponseDto MapToResponseDto(StockAdjustment adjustment) {

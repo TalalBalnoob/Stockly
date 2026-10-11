@@ -49,7 +49,10 @@ public class OrdersRepo : IOrdersRepo {
 			throw new KeyNotFoundException($"Order with ID {id} not found.");
 		}
 
+		this._context.Remove(existingOrder);
+		int index = _context.IndexOf(existingOrder);
 		existingOrder = order;
+		_context.Insert(index,existingOrder);
 		return order;
 	}
 

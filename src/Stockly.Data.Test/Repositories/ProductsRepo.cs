@@ -1,83 +1,85 @@
-using Microsoft.EntityFrameworkCore;
+using System.Collections.ObjectModel;
 
 using Stockly.Application.DTOs.Products;
 using Stockly.Application.Interfaces.Repositories;
-using Stockly.Data.Persistence;
 using Stockly.Domain.Entities;
 
 namespace Stockly.Data.Repositories;
 
 public class ProductsRepo : IProductsRepo {
-	private readonly StocklyDbContext _context;
+	private readonly Collection<Product> _context;
 
-	public ProductsRepo(StocklyDbContext context) {
+	public ProductsRepo(Collection<Product> context) {
 		_context = context;
 	}
 
 	public async Task<IEnumerable<Product>> GetAllAsync() {
-		return await _context.Products
-			.ToListAsync();
+		return _context.ToList();
 	}
 
 	public async Task<Product?> GetByIdAsync(Guid id) {
-		var product = await _context.Products.FindAsync(id);
+		var product = _context.First(p => p.Id == id);
 		return product != null ? product : null;
 	}
 
 	public async Task<IEnumerable<Product>> GetByNameAsync(string name) {
-		return await _context.Products
-			.Where(p => p.Name.Contains(name))
-			.ToListAsync();
+		return _context.Where(p => p.Name == name).ToList();
 	}
 
 	public async Task<IEnumerable<Product>> GetAvailableAsync() {
-		return await _context.Products
+		return _context
 			.Where(p => p.IsAvailable)
-			.ToListAsync();
+			.ToList();
 	}
 
 	public async Task<IEnumerable<Product>> GetOutOfStockAsync() {
-		return await _context.Products
+		return _context
 			.Where(p => p.Quantity <= 0)
-			.ToListAsync();
+			.ToList();
 	}
 
 	public async Task<IEnumerable<Product>> GetByPriceRangeAsync(decimal minPrice, decimal maxPrice) {
-		return await _context.Products
+		return _context
 			.Where(p => p.Price >= minPrice && p.Price <= maxPrice)
-			.ToListAsync();
+			.ToList();
 	}
 
 	public async Task<IEnumerable<Product>> GetLowStockAsync(int threshold) {
-		return await _context.Products
+		return _context
 			.Where(p => p.Quantity <= threshold)
-			.ToListAsync();
+			.ToList();
 	}
 
 	public async Task<Product> AddAsync(Product product) {
-		_context.Products.Add(product);
-		await _context.SaveChangesAsync();
-
+		_context.Add(product);
 		return product;
 	}
 
 	public async Task<Product> UpdateAsync(Product product) {
-		_context.Products.Update(product);
-		await _context.SaveChangesAsync();
+		int index = _context.IndexOf(product);
+		Product searchedProduct = _context.First(p => p.Id == product.Id);
+		searchedProduct.Name = product.Name;
+		searchedProduct.Price = product.Price;
+		searchedProduct.Quantity = product.Quantity;
+		searchedProduct.Description = product.Description;
+		searchedProduct.StorageNote = product.StorageNote;
+		searchedProduct.IsAvailable = product.IsAvailable;
 
-		return product;
+		this._context.RemoveAt(index);
+		this._context.Insert(index,searchedProduct);
+
+		return searchedProduct;
 	}
 
 	public async Task DeleteAsync(Guid id) {
-		var product = await _context.Products.FindAsync(id);
+		var product =  _context.First(p=> p.Id == id);
 		if (product != null) {
-			_context.Products.Remove(product);
-			await _context.SaveChangesAsync();
+			_context.Remove(product);
 		}
 	}
 
 	public async Task<bool> ExistsAsync(Guid id) {
-		return await _context.Products.AnyAsync(p => p.Id == id);
+		return _context.Any(p => p.Id == id);
 	}
 
 
