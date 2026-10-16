@@ -1,5 +1,8 @@
+using System.Collections.ObjectModel;
+
 using Stockly.Api.Middleware;
 using Stockly.Data;
+using Stockly.Domain.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +11,10 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 // Add Services From Data and Application Layers
 builder.Services.AddData(builder.Configuration);
+builder.Services.AddSingleton<Collection<Order>>();
+builder.Services.AddSingleton<Collection<Product>>();
+builder.Services.AddSingleton<Collection<StockAdjustment>>();
+
 builder.Services.AddApplication();
 
 var app = builder.Build();

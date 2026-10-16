@@ -7,12 +7,12 @@ using Stockly.Application.Interfaces.Repositories;
 using Stockly.Domain.Entities;
 using Stockly.Domain.Enums;
 
-namespace Stockly.Data.Repositories;
+namespace Stockly.Data.Test.Repositories;
 
-public class OrdersRepo : IOrdersRepo {
-	private readonly Collection<Order> _context;
+public class FakeOrdersRepo : IOrdersRepo {
+	private readonly List<Order> _context;
 
-	public OrdersRepo(Collection<Order> context) {
+	public FakeOrdersRepo(List<Order> context) {
 		_context = context;
 	}
 
@@ -45,12 +45,12 @@ public class OrdersRepo : IOrdersRepo {
 
 	public async Task<Order> UpdateAsync(Guid id, Order order) {
 		var existingOrder = _context.FirstOrDefault(o => o.Id == id);
+		int index = _context.IndexOf(existingOrder);
 		if (existingOrder == null) {
 			throw new KeyNotFoundException($"Order with ID {id} not found.");
 		}
 
 		this._context.Remove(existingOrder);
-		int index = _context.IndexOf(existingOrder);
 		existingOrder = order;
 		_context.Insert(index,existingOrder);
 		return order;

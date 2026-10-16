@@ -1,15 +1,13 @@
-using System.Collections.ObjectModel;
-
 using Stockly.Application.DTOs.Products;
 using Stockly.Application.Interfaces.Repositories;
 using Stockly.Domain.Entities;
 
-namespace Stockly.Data.Repositories;
+namespace Stockly.Data.Test.Repositories;
 
-public class ProductsRepo : IProductsRepo {
-	private readonly Collection<Product> _context;
+public class FakeProductsRepo : IProductsRepo {
+	private readonly List<Product> _context;
 
-	public ProductsRepo(Collection<Product> context) {
+	public FakeProductsRepo(List<Product> context) {
 		_context = context;
 	}
 

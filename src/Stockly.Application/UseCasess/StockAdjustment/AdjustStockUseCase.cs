@@ -25,7 +25,7 @@ public class AdjustStockUseCase : IAdjustStockUseCase {
 		var stockAdjustment = new Domain.Entities.StockAdjustment {
 			ProductId = request.ProductId,
 			RelatedOrderId = request.RelatedOrderId,
-			Change = request.Change,
+			Change = -request.Change,
 			Reason = request.Reason,
 		};
 

@@ -4,12 +4,12 @@ using Stockly.Application.DTOs.StockAdjustments;
 using Stockly.Application.Interfaces.Repositories;
 using Stockly.Domain.Entities;
 
-namespace Stockly.Data.Repositories;
+namespace Stockly.Data.Test.Repositories;
 
-public class StockAdjustmentsRepo : IStockAdjustmentsRepo {
-	private readonly Collection<StockAdjustment> _context;
+public class FakeStockAdjustmentsRepo : IStockAdjustmentsRepo {
+	private readonly List<StockAdjustment> _context;
 
-	public StockAdjustmentsRepo(Collection<StockAdjustment> context) {
+	public FakeStockAdjustmentsRepo(List<StockAdjustment> context) {
 		_context = context;
 	}
 
